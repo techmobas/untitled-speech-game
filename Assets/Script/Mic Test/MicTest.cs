@@ -26,7 +26,7 @@ public class MicTest : MonoBehaviour
 
     private void OnPhraseRecognized(PhraseRecognizedEventArgs args)
     {
-        if (args.confidence == ConfidenceLevel.High || args.confidence == ConfidenceLevel.Medium)
+        if (args.confidence == ConfidenceLevel.High || args.confidence == ConfidenceLevel.Medium || args.confidence == ConfidenceLevel.Low)
         {
             switch (args.confidence)
             {

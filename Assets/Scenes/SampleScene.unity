@@ -294,6 +294,7 @@ MonoBehaviour:
   abilities:
   - {fileID: 11400000, guid: 9d63f23ad1d244546b3dc9c7ee8e5728, type: 2}
   - {fileID: 11400000, guid: 2de03bd87f29aaf469c62b4e4fb34896, type: 2}
+  - {fileID: 11400000, guid: 41d6601355bcb124985e857b5a9fb78d, type: 2}
 --- !u!4 &1213958916
 Transform:
   m_ObjectHideFlags: 0
@@ -356,3 +357,4 @@ MonoBehaviour:
   playerStats: {fileID: 1213958915}
   enemyStats: {fileID: 340444983}
   isPlayerTurn: 1
+  timeBetweenTurns: 2

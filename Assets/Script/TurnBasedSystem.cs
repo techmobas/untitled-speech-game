@@ -13,7 +13,6 @@ namespace USG.Mechanics
         public CharacterStats enemyStats;
 
         private KeywordRecognizer keywordRecognizer;
-        private PhraseRecognizer phraseRecognizer;
 
         public bool isPlayerTurn = true;
         [SerializeField] float timeBetweenTurns = 2f;
@@ -22,25 +21,31 @@ namespace USG.Mechanics
         {
             // Add the player's abilities as keywords for the PhraseRecognizer
             string[] keywords = playerStats.GetAbilityNames();
+            for (int i = 0; i < keywords.Length; i++)
+            {
+                keywords[i] = keywords[i].ToLower();
+            }
 
             // initialize the keyword recognizer with the keywords array
             keywordRecognizer = new KeywordRecognizer(keywords);
-            keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
-            keywordRecognizer.Start();
 
-            StartCoroutine(TakeTurns());
+            StartCoroutine(TakeTurn());
         }
 
         private void OnPhraseRecognized(PhraseRecognizedEventArgs args)
         {
             string recognizedText = args.text.ToLower();
             string[] abilityKeyword = playerStats.GetAbilityNames();
+            for (int i = 0; i < abilityKeyword.Length; i++)
+            {
+                abilityKeyword[i] = abilityKeyword[i].ToLower();
+            }
 
             if (isPlayerTurn)
             {
                 if (Array.IndexOf(abilityKeyword, recognizedText) >= 0)
                 {
-                    if (args.confidence == ConfidenceLevel.High || args.confidence == ConfidenceLevel.Medium)
+                    if (args.confidence == ConfidenceLevel.High || args.confidence == ConfidenceLevel.Medium || args.confidence == ConfidenceLevel.Low)
                     {
                         switch (args.confidence)
                         {
@@ -63,35 +68,32 @@ namespace USG.Mechanics
             }
         }
 
-        private IEnumerator TakeTurns()
+        public IEnumerator TakeTurn()
         {
+            Debug.Log("Player's turn");
+            keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
+            keywordRecognizer.Start();
 
-			while (isPlayerTurn)
-			{
+            while (keywordRecognizer.IsRunning)
+            {
                 yield return null;
-			}
+            }
 
+            // Player has made a move, stop the keyword recognizer
+            keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
+            keywordRecognizer.Stop();
 
-            //while (playerStats.CurrentHealth() > 0 && enemyStats.CurrentHealth() > 0)
+            // Check if the player has won
+            //if (CheckWinCondition())
             //{
-            //    if (isPlayerTurn)
-            //    {
-            //        // Wait for player to take their turn
-            //        yield return new WaitUntil(() => keywordRecognizer.IsRunning);
-            //        Debug.Log("Waiting player input");
-            //        // Once the player has finished their turn, switch to the AI's turn
-            //        isPlayerTurn = false;
-            //    }
-            //    else
-            //    {
-            //        EnemyTurn();
-
-            //        // Once the AI has finished their turn, switch back to the player's turn
-            //        isPlayerTurn = true;
-            //    }
-
-            //    yield return new WaitForSeconds(5.0f);
+            //    Debug.Log("Player wins!");
+            //    yield break;
             //}
+
+            yield return new WaitForSeconds(1.0f);
+
+            // Call the enemy's turn after a delay
+            yield return StartCoroutine(EnemyTurn());
         }
 
         public void PlayerUseAbility(string abilityName)
@@ -149,7 +151,7 @@ namespace USG.Mechanics
             }
         }
 
-        private void EnemyTurn()
+        IEnumerator EnemyTurn()
         {
             //Check if the enemy can use an ability
             Debug.Log("enemy input");
@@ -179,14 +181,10 @@ namespace USG.Mechanics
             else
             {
                 Debug.Log("Enemy run out of mana");
-
             }
-        }
 
-        private void OnDestroy()
-        {
-            keywordRecognizer.Stop();
-            keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
+            // Wait for 1 second before ending the enemy turn
+            yield return new WaitForSeconds(1f);
         }
     }
 }
