@@ -6,6 +6,12 @@ using UnityEngine;
 using UnityEngine.Windows.Speech;
 
 namespace USG.Mechanics {
+    public enum GameState {
+        PlayerTurn,
+        EnemyTurn,
+        GameOver
+    }
+
     public class TurnBasedSystem : MonoBehaviour {
         public CharacterStats playerStats;
         public CharacterStats enemyStats;
@@ -13,9 +19,11 @@ namespace USG.Mechanics {
 
         private KeywordRecognizer keywordRecognizer;
 
-        public bool isPlayerTurn = true;
-        [SerializeField] float timeBetweenTurns = 2f;
-        // Start is called before the first frame update
+
+        private GameState gameState;
+        public bool isPlayerTurn;
+        [SerializeField] float timeBetweenTurns;
+
         void Start() {
             // Add the player's abilities as keywords for the PhraseRecognizer
             keywords = playerStats.GetAbilityNames();
@@ -29,90 +37,95 @@ namespace USG.Mechanics {
         }
 
         private void OnPhraseRecognized(PhraseRecognizedEventArgs args) {
+            if (string.IsNullOrEmpty(args.text)) {
+                Debug.LogWarning("No phrase was recognized");
+                return;
+            }
+
             string recognizedText = args.text.ToLower();
             string[] abilityKeyword = playerStats.GetAbilityNames();
             for (int i = 0; i < abilityKeyword.Length; i++) {
                 abilityKeyword[i] = abilityKeyword[i].ToLower();
             }
 
-            if (isPlayerTurn) {
-                if (Array.IndexOf(abilityKeyword, recognizedText) >= 0) {
-                    if (args.confidence == ConfidenceLevel.High || args.confidence == ConfidenceLevel.Medium || args.confidence == ConfidenceLevel.Low) {
-                        switch (args.confidence) {
-                            case ConfidenceLevel.High:
-                                Debug.Log("High confidence");
-                                PlayerUseAbility(recognizedText);
-                                break;
-                            case ConfidenceLevel.Medium:
-                                Debug.Log("Medium confidence");
-                                PlayerUseAbility(recognizedText);
-                                break;
-                            case ConfidenceLevel.Low:
-                                Debug.Log("Low confidence");
-                                break;
-                            default:
-                                break;
+            if (Array.IndexOf(abilityKeyword, recognizedText) < 0) {
+                Debug.LogWarning("Phrase not recognized as a valid keyword: " + recognizedText);
+                return;
+            }
+
+
+            if (Array.IndexOf(abilityKeyword, recognizedText) >= 0) {
+                if (args.confidence == ConfidenceLevel.High || args.confidence == ConfidenceLevel.Medium || args.confidence == ConfidenceLevel.Low) {
+                    switch (args.confidence) {
+                        case ConfidenceLevel.High:
+                            Debug.Log("High confidence");
+                            PlayerUseAbility(recognizedText);
+                            break;
+                        case ConfidenceLevel.Medium:
+                            Debug.Log("Medium confidence");
+                            PlayerUseAbility(recognizedText);
+                            break;
+                        case ConfidenceLevel.Low:
+                            Debug.LogWarning("Low confidence");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+        }
+        IEnumerator TakeTurn() {
+            while (gameState != GameState.GameOver) {
+                switch (gameState) {
+                    case GameState.PlayerTurn:
+                        Debug.Log("Player's turn");
+                        yield return StartCoroutine(PlayerTurn());
+                        gameState = GameState.EnemyTurn;
+                        break;
+                    case GameState.EnemyTurn:
+                        Debug.Log("Enemy turn");
+                        yield return StartCoroutine(EnemyTurn());
+                        if (WinCondition()) {
+                            gameState = GameState.GameOver;
                         }
-                    }
+                        else {
+                            gameState = GameState.PlayerTurn;
+                        }
+                        break;
                 }
+                yield return new WaitForSeconds(timeBetweenTurns);
             }
         }
 
-        public IEnumerator TakeTurn() {
-            bool gameOver = false;
-
-            while (!gameOver) {
-                if (isPlayerTurn) {
-                    Debug.Log("Player's turn");
-
-                    if (Input.GetButtonDown("Jump")) {
-                        PlayerUseAbility("Persona");
-
-                    }
-                    //keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
-                    //keywordRecognizer.Start();
-
-                    //while (keywordRecognizer.IsRunning) {
-                    //	yield return null;
-                    //}
-
-                    //// Player has made a move, stop the keyword recognizer
-                    //keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
-                    //keywordRecognizer.Stop();
-
-                    isPlayerTurn = false;
-                }
-                else {
-                    EnemyTurn();
-                    isPlayerTurn = true;
-                }
-
-                gameOver = WinCondition();
-            }
-            yield return new WaitForSeconds(timeBetweenTurns);
-        }
-
-        public bool WinCondition() {
-            // Check if player's health is below zero
+        bool WinCondition() {
             if (playerStats.CurrentHealth() <= 0) {
                 Debug.Log("Enemy wins!");
                 return true;
             }
-
-            // Check if enemy's health is below zero
             if (enemyStats.CurrentHealth() <= 0) {
                 Debug.Log("Player wins!");
                 return true;
             }
-
-            // If neither condition is met, the game is not over
             return false;
         }
 
-        public void PlayerUseAbility(string abilityName) {
-            AbilitySO selectedAbility = null;
+        IEnumerator PlayerTurn() {
+            Debug.Log("Waiting for player input...");
+            keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
+            keywordRecognizer.Start();
 
-            // Find the ability with the specified name
+            while (keywordRecognizer.IsRunning) {
+                yield return null;
+            }
+            keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
+            keywordRecognizer.Stop();
+            //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+            //PlayerUseAbility("Attack");
+        }
+
+        void PlayerUseAbility(string abilityName) {
+            AbilitySO selectedAbility = null;
             foreach (AbilitySO ability in playerStats.abilities) {
                 if (ability.abilityName == abilityName) {
                     selectedAbility = ability;
@@ -123,41 +136,34 @@ namespace USG.Mechanics {
             // Check if an ability was found
             if (selectedAbility != null) {
                 int playerCurrentMana = playerStats.CurrentMana();
-
-                // Check if the player has enough mana to use the ability
                 if (playerCurrentMana >= selectedAbility.manaCost) {
-                    // Deduct the mana cost from the player's mana pool
                     playerCurrentMana -= selectedAbility.manaCost;
-                    playerStats.SetCurrentMana(playerCurrentMana);
-
-                    // Apply the ability's effects
-                    if (selectedAbility.abilityType == AbilitySO.AbilityType.Damage) {
-                        // Add logic for dealing damage here
-                        int damage = selectedAbility.damage + playerStats.AttackPower() - enemyStats.Defense();
-                        enemyStats.TakeDamage(damage);
-                        Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + damage);
+                    switch (selectedAbility.abilityType) {
+                        case AbilitySO.AbilityType.Damage:
+                            int damage = selectedAbility.damage + playerStats.AttackPower() - enemyStats.Defense();
+                            enemyStats.TakeDamage(damage);
+                            Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + damage);
+                            break;
+                        case AbilitySO.AbilityType.Defense:
+                            //Trigger defense function
+                            break;
+                        case AbilitySO.AbilityType.Heal:
+                            //Trigger heal function
+                            break;
                     }
-                    else if (selectedAbility.abilityType == AbilitySO.AbilityType.Defense) {
-                        // Add logic for increasing defense here
-                    }
-                    else if (selectedAbility.abilityType == AbilitySO.AbilityType.Heal) {
-                        // Add logic for healing here
-                    }      
+                    enemyStats.SetCurrentMana(playerCurrentMana);
                 }
                 else {
-                    // The player doesn't have enough mana to use the ability
                     Debug.Log("Not enough mana to use " + abilityName);
                 }
             }
             else {
-                // The ability was not found
                 Debug.Log(abilityName + " not found");
             }
         }
 
-        void EnemyTurn() {
-            //Check if the enemy can use an ability
-            Debug.Log("enemy input");
+        IEnumerator EnemyTurn() {
+            Debug.Log("Waiting for enemy input...");
             int enemyCurrentMana = enemyStats.CurrentMana();
 
             if (enemyCurrentMana > 0) {
@@ -171,7 +177,6 @@ namespace USG.Mechanics {
                         break;
                     case AbilitySO.AbilityType.Defense:
                         //Trigger defense function
-
                         break;
                     case AbilitySO.AbilityType.Heal:
                         //Trigger heal function
@@ -183,8 +188,10 @@ namespace USG.Mechanics {
             else {
                 Debug.Log("Enemy run out of mana");
             }
+            yield return null;
         }
     }
 }
 
-    
+
+
