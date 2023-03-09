@@ -47,6 +47,11 @@ namespace USG.Character
                 //Die function
             }
         }
+
+        public void SetCurrentMana(int newMana) {
+            currentMana = Mathf.Clamp(newMana, 0, maxMana); // Make sure currentMana doesn't exceed maxMana or go below 0
+            Debug.Log("Current mana set to: " + currentMana);
+        }
     }
 }
 
