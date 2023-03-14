@@ -23,10 +23,18 @@ namespace USG.Character
 
         public AbilitySO[] abilities;
 
+
+
+        [Header("Character Animation")]
+        private Animator playAnim;
+        private int attackID;
+
         private void Start()
         {
             currentHealth = maxHealth;
             currentMana = maxMana;
+
+            playAnim = GetComponentInChildren<Animator>();
         }
 
         public string[] GetAbilityNames()
@@ -44,13 +52,30 @@ namespace USG.Character
             currentHealth -= damage;
             if (currentHealth <= 0)
             {
-                //Die function
+                StartCoroutine(CharacterDead());
             }
         }
 
         public void SetCurrentMana(int newMana) {
             currentMana = Mathf.Clamp(newMana, 0, maxMana); // Make sure currentMana doesn't exceed maxMana or go below 0
             Debug.Log("Current mana set to: " + currentMana);
+        }
+
+        public void PlayAttack() {
+            playAnim.SetTrigger("Attack");
+            attackID = Random.Range(1, 2);
+            playAnim.SetInteger("AttackID", attackID);
+        }
+
+        public void PlayStagger() {
+            playAnim.SetTrigger("Hit");
+        }
+
+
+        IEnumerator CharacterDead() {
+            playAnim.SetBool("IsDead", true);
+            yield return new WaitForSeconds(3f);
+            Destroy(gameObject);
         }
     }
 }

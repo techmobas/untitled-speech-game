@@ -15,7 +15,8 @@ public class AbilitySO : ScriptableObject
     public enum AbilityType
 	{
         Damage,
-        Defense,
-        Heal
+        Heal,
+        Recharge,
+        Buff
 	}
 }

@@ -13,18 +13,25 @@ namespace USG.Mechanics {
     }
 
     public class TurnBasedSystem : MonoBehaviour {
-        public CharacterStats playerStats;
-        public CharacterStats enemyStats;
+        public GameObject player;
+        public GameObject enemy;
+
+        CharacterStats playerStats;
+        CharacterStats enemyStats;
+
         private string[] keywords;
 
         private KeywordRecognizer keywordRecognizer;
 
-
         private GameState gameState;
-        public bool isPlayerTurn;
+        
         [SerializeField] float timeBetweenTurns;
+        bool playerActionSuccess;
 
         void Start() {
+            playerStats = player.GetComponent<CharacterStats>();
+            enemyStats = enemy.GetComponent<CharacterStats>();
+
             // Add the player's abilities as keywords for the PhraseRecognizer
             keywords = playerStats.GetAbilityNames();
             for (int i = 0; i < keywords.Length; i++) {
@@ -53,6 +60,9 @@ namespace USG.Mechanics {
                 return;
             }
 
+            Debug.Log("Phrase recognized: " + recognizedText);
+            playerActionSuccess = true;
+            keywordRecognizer.Stop();
 
             if (Array.IndexOf(abilityKeyword, recognizedText) >= 0) {
                 if (args.confidence == ConfidenceLevel.High || args.confidence == ConfidenceLevel.Medium || args.confidence == ConfidenceLevel.Low) {
@@ -67,24 +77,35 @@ namespace USG.Mechanics {
                             break;
                         case ConfidenceLevel.Low:
                             Debug.LogWarning("Low confidence");
+                            PlayerUseAbility(recognizedText);
                             break;
                         default:
                             break;
                     }
                 }
             }
-
         }
         IEnumerator TakeTurn() {
             while (gameState != GameState.GameOver) {
                 switch (gameState) {
                     case GameState.PlayerTurn:
                         Debug.Log("Player's turn");
+
                         yield return StartCoroutine(PlayerTurn());
-                        gameState = GameState.EnemyTurn;
+						
+                        if (WinCondition()) {
+                            gameState = GameState.GameOver;
+                        }
+                        else {
+                            if(playerActionSuccess) {
+                                gameState = GameState.EnemyTurn;
+                            }
+                        }
+
                         break;
                     case GameState.EnemyTurn:
                         Debug.Log("Enemy turn");
+
                         yield return StartCoroutine(EnemyTurn());
                         if (WinCondition()) {
                             gameState = GameState.GameOver;
@@ -115,19 +136,20 @@ namespace USG.Mechanics {
             keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
             keywordRecognizer.Start();
 
-            while (keywordRecognizer.IsRunning) {
-                yield return null;
-            }
+            
+            yield return new WaitForSeconds(2f);
+
+            yield return new WaitUntil(() => playerActionSuccess);
+
             keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
             keywordRecognizer.Stop();
-            //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-            //PlayerUseAbility("Attack");
+
         }
 
         void PlayerUseAbility(string abilityName) {
             AbilitySO selectedAbility = null;
             foreach (AbilitySO ability in playerStats.abilities) {
-                if (ability.abilityName == abilityName) {
+                if (ability.abilityKeyword == abilityName) {
                     selectedAbility = ability;
                     break;
                 }
@@ -137,28 +159,34 @@ namespace USG.Mechanics {
             if (selectedAbility != null) {
                 int playerCurrentMana = playerStats.CurrentMana();
                 if (playerCurrentMana >= selectedAbility.manaCost) {
+
                     playerCurrentMana -= selectedAbility.manaCost;
                     switch (selectedAbility.abilityType) {
                         case AbilitySO.AbilityType.Damage:
+                            playerStats.PlayAttack();
                             int damage = selectedAbility.damage + playerStats.AttackPower() - enemyStats.Defense();
                             enemyStats.TakeDamage(damage);
+                            enemyStats.PlayStagger();
                             Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + damage);
                             break;
-                        case AbilitySO.AbilityType.Defense:
+                        case AbilitySO.AbilityType.Buff:
                             //Trigger defense function
                             break;
                         case AbilitySO.AbilityType.Heal:
                             //Trigger heal function
                             break;
+                        case AbilitySO.AbilityType.Recharge:
+                            //Trigger heal function
+                            break;
                     }
-                    enemyStats.SetCurrentMana(playerCurrentMana);
+                    playerStats.SetCurrentMana(playerCurrentMana);
                 }
                 else {
-                    Debug.Log("Not enough mana to use " + abilityName);
+                    Debug.Log("Not enough mana to use " + selectedAbility.abilityName);
                 }
             }
             else {
-                Debug.Log(abilityName + " not found");
+                Debug.Log(selectedAbility.abilityName + " not found");
             }
         }
 
@@ -167,15 +195,20 @@ namespace USG.Mechanics {
             int enemyCurrentMana = enemyStats.CurrentMana();
 
             if (enemyCurrentMana > 0) {
+
                 int abilityIndex = UnityEngine.Random.Range(0, enemyStats.abilities.Length);
                 AbilitySO selectedAbility = enemyStats.abilities[abilityIndex];
                 switch (selectedAbility.abilityType) {
                     case AbilitySO.AbilityType.Damage:
                         int damage = enemyStats.abilities[abilityIndex].damage + enemyStats.AttackPower() - playerStats.Defense();
+                        // Play attack animation
+                        enemyStats.PlayAttack();
+
                         playerStats.TakeDamage(damage);
+                        playerStats.PlayStagger();
                         Debug.Log("Damage Dealt by " + enemyStats.abilities[abilityIndex].abilityName + " for " + damage);
                         break;
-                    case AbilitySO.AbilityType.Defense:
+                    case AbilitySO.AbilityType.Buff:
                         //Trigger defense function
                         break;
                     case AbilitySO.AbilityType.Heal:
@@ -188,10 +221,8 @@ namespace USG.Mechanics {
             else {
                 Debug.Log("Enemy run out of mana");
             }
+            playerActionSuccess = false;
             yield return null;
         }
     }
 }
-
-
-
