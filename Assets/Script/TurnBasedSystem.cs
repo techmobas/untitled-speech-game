@@ -136,8 +136,10 @@ namespace USG.Mechanics {
             keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
             keywordRecognizer.Start();
 
-            
-            yield return new WaitForSeconds(2f);
+			if (Input.GetKeyDown(KeyCode.Space)) {
+                PlayerUseAbility("Fire");
+                playerActionSuccess = true;
+			}
 
             yield return new WaitUntil(() => playerActionSuccess);
 
