@@ -87,7 +87,7 @@
     },
     "com.unity.barracuda": {
       "version": "3.0.0",
-      "depth": 0,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.burst": "1.6.0",

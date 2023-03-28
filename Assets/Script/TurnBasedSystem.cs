@@ -40,6 +40,7 @@ namespace USG.Mechanics {
 
             // initialize the keyword recognizer with the keywords array
             keywordRecognizer = new KeywordRecognizer(keywords);
+           
             StartCoroutine(TakeTurn());
         }
 
@@ -135,11 +136,6 @@ namespace USG.Mechanics {
             Debug.Log("Waiting for player input...");
             keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
             keywordRecognizer.Start();
-
-			if (Input.GetKeyDown(KeyCode.Space)) {
-                PlayerUseAbility("Fire");
-                playerActionSuccess = true;
-			}
 
             yield return new WaitUntil(() => playerActionSuccess);
 
