@@ -2,30 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace USG.Character {
 
     public class StatusUI : MonoBehaviour {
         CharacterStats chara;
-        [SerializeField] TextMeshProUGUI hpText;
-        [SerializeField] TextMeshProUGUI manaText;
 
-        float uiHP;
-        float uiMana;
+        [SerializeField] Slider hpSlider;
+        [SerializeField] Slider manaSlider;
 
 
         void Start() {
             chara = GetComponentInParent<CharacterStats>();
 
+            hpSlider.maxValue = chara.MaxHealth();
+            manaSlider.maxValue = chara.MaxMana();
         }
+
+
 
         // Update is called once per frame
         void Update() {
-            uiHP = Mathf.Max(chara.CurrentHealth());
-            uiMana = Mathf.Max(chara.CurrentMana());
-
-            hpText.text = $"HP: {Mathf.RoundToInt(uiHP)}";
-            manaText.text = $"SP: {Mathf.RoundToInt(uiMana)}";
+            hpSlider.value = chara.CurrentHealth();
+            manaSlider.value = chara.CurrentMana();
         }
     }
 }

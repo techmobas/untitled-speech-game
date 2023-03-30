@@ -134,14 +134,35 @@ namespace USG.Mechanics {
 
         IEnumerator PlayerTurn() {
             Debug.Log("Waiting for player input...");
+
+            // Start recording audio from the microphone
+            AudioClip audioClip = Microphone.Start(null, false, 10, 44100);
+            float startTime = Time.time;
+
             keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
             keywordRecognizer.Start();
 
             yield return new WaitUntil(() => playerActionSuccess);
 
+            Microphone.End(null);
+
             keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
             keywordRecognizer.Stop();
 
+            if (audioClip != null) {
+                // Save the audio clip if there was a successful action
+                if (playerActionSuccess) {
+                    float endTime = Time.time;
+                    float recordingLength = endTime - startTime;
+
+                    // Save the audio clip to a WAV file in the project's Assets folder
+                    SavWav.Save("Assets/player_action_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".wav", audioClip);
+                }
+                // If there was no successful action, discard the audio clip
+                else {
+                    Destroy(audioClip);
+                }
+            }
         }
 
         void PlayerUseAbility(string abilityName) {
