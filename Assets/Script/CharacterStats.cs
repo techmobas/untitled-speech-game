@@ -13,6 +13,8 @@ namespace USG.Character
         [SerializeField] protected int defense;
         [SerializeField] protected int maxMana;
         protected int currentMana;
+        [SerializeField] protected int criticalChance;
+        [SerializeField] protected int criticalDamage;
 
         public int MaxHealth() { return maxHealth; }
         public int CurrentHealth() { return currentHealth; }
@@ -20,6 +22,8 @@ namespace USG.Character
         public int Defense() { return defense; }
         public int MaxMana() { return maxMana; }
         public int CurrentMana() { return currentMana; }
+        public int GetCC() { return criticalChance; }
+        public int GetCD() { return criticalChance; }
 
         public AbilitySO[] abilities;
 
