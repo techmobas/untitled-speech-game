@@ -6,10 +6,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Ability", menuName = "Ability")]
 public class AbilitySO : ScriptableObject
 {
+    [Header("Text Data")]
     public string abilityName;
     public string abilityKeyword;
-    public int manaCost;
-    public int damage;
+    [Header("Stats Number")]
+    public float damage;
+    public float manaCost;
     public AbilityType abilityType;
 
     public enum AbilityType
@@ -17,6 +19,9 @@ public class AbilitySO : ScriptableObject
         Damage,
         Heal,
         Recharge,
-        Buff
-	}
+        ATKBuff,
+        DEFBuff,
+        CCBuff,
+        CDBuff,
+    }
 }

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: 
-  abilityName: Attack
+  abilityName: Basic Attack
   abilityKeyword: attack
+  damage: 100
   manaCost: 0
-  damage: 10
   abilityType: 0

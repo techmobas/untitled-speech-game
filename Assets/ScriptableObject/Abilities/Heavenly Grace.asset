@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
-  m_Name: Persona
+  m_Name: Heavenly Grace
   m_EditorClassIdentifier: 
-  abilityName: Persona
-  abilityKeyword: persona
-  manaCost: 50
-  damage: 100
-  abilityType: 0
+  abilityName: Heavenly Grace
+  abilityKeyword: divine grace
+  damage: 175
+  manaCost: 100
+  abilityType: 1

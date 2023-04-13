@@ -176,26 +176,71 @@ namespace USG.Mechanics {
 
             // Check if an ability was found
             if (selectedAbility != null) {
-                int playerCurrentMana = playerStats.CurrentMana();
+                float playerCurrentMana = playerStats.CurrentMana();
                 if (playerCurrentMana >= selectedAbility.manaCost) {
 
                     playerCurrentMana -= selectedAbility.manaCost;
                     switch (selectedAbility.abilityType) {
                         case AbilitySO.AbilityType.Damage:
                             playerStats.PlayAttack();
-                            int damage = selectedAbility.damage + playerStats.AttackPower() - enemyStats.Defense();
-                            enemyStats.TakeDamage(damage);
+
+                            float realDamage;
+                            
+                            float rawOutcome = selectedAbility.damage + (playerStats.AttackPower() * .5f) - enemyStats.Defense();
+
+                            if (UnityEngine.Random.Range(0f, 1f) >= playerStats.GetCC()) {
+                                
+                                float critOutcome = rawOutcome * (1 + playerStats.GetCD());
+                                realDamage = critOutcome;
+                                Debug.Log("Woooo Yeah Baby! That's what i'm waiting for, that what is all about");
+                            }
+							else {
+                                realDamage = rawOutcome;
+							}
+                            enemyStats.TakeDamage(realDamage);
                             enemyStats.PlayStagger();
-                            Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + damage);
-                            break;
-                        case AbilitySO.AbilityType.Buff:
-                            //Trigger defense function
+                            Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + realDamage);
                             break;
                         case AbilitySO.AbilityType.Heal:
-                            //Trigger heal function
+                            playerStats.PlayAttack();
+
+                            float heal = selectedAbility.damage;
+                            playerStats.ModifyAttribute(heal, Character.Attribute.Attack);
                             break;
                         case AbilitySO.AbilityType.Recharge:
-                            //Trigger heal function
+                            playerStats.PlayAttack();
+
+                            float mana_charge = selectedAbility.damage;
+                            playerStats.ModifyAttribute(mana_charge, Character.Attribute.Attack);
+                           
+                            break;
+                        case AbilitySO.AbilityType.ATKBuff:
+                            playerStats.PlayAttack();
+
+                            float atk_buff = selectedAbility.damage;
+                            playerStats.ModifyAttribute(atk_buff, Character.Attribute.Attack);
+
+                            break;
+                        case AbilitySO.AbilityType.DEFBuff:
+                            playerStats.PlayAttack();
+
+                            float def_buff = selectedAbility.damage;
+                            playerStats.ModifyAttribute(def_buff, Character.Attribute.Defense);
+
+                            break;
+                        case AbilitySO.AbilityType.CCBuff:
+                            playerStats.PlayAttack();
+
+                            float cc_buff = selectedAbility.damage;
+                            playerStats.ModifyAttribute(cc_buff, Character.Attribute.CritChance);
+
+                            break;
+                        case AbilitySO.AbilityType.CDBuff:
+                            playerStats.PlayAttack();
+
+                            float cd_buff = selectedAbility.damage;
+                            playerStats.ModifyAttribute(cd_buff, Character.Attribute.CritDamage);
+
                             break;
                     }
                     playerStats.SetCurrentMana(playerCurrentMana);
@@ -211,7 +256,7 @@ namespace USG.Mechanics {
 
         IEnumerator EnemyTurn() {
             Debug.Log("Waiting for enemy input...");
-            int enemyCurrentMana = enemyStats.CurrentMana();
+            float enemyCurrentMana = enemyStats.CurrentMana();
 
             if (enemyCurrentMana > 0) {
 
@@ -219,19 +264,61 @@ namespace USG.Mechanics {
                 AbilitySO selectedAbility = enemyStats.abilities[abilityIndex];
                 switch (selectedAbility.abilityType) {
                     case AbilitySO.AbilityType.Damage:
-                        int damage = enemyStats.abilities[abilityIndex].damage + enemyStats.AttackPower() - playerStats.Defense();
+                        float realDamage;
+                        float randomValue = UnityEngine.Random.Range(0f, 1f);
+
+                        float rawOutcome = enemyStats.abilities[abilityIndex].damage + enemyStats.AttackPower() - playerStats.Defense();
+
+                        if (randomValue > enemyStats.GetCC()) {
+
+                            float critOutcome = rawOutcome * (1 + enemyStats.GetCD());
+                            realDamage = critOutcome;
+                            Debug.Log("Woooo Yeah Baby! That's what i'm waiting for, that what is all about");
+                        }
+                        else {
+                            realDamage = rawOutcome;
+                        }
+
                         // Play attack animation
                         enemyStats.PlayAttack();
 
-                        playerStats.TakeDamage(damage);
+                        playerStats.TakeDamage(realDamage);
                         playerStats.PlayStagger();
-                        Debug.Log("Damage Dealt by " + enemyStats.abilities[abilityIndex].abilityName + " for " + damage);
-                        break;
-                    case AbilitySO.AbilityType.Buff:
-                        //Trigger defense function
+                        Debug.Log("Damage Dealt by " + enemyStats.abilities[abilityIndex].abilityName + " for " + realDamage);
                         break;
                     case AbilitySO.AbilityType.Heal:
-                        //Trigger heal function
+                        enemyStats.PlayAttack();
+                        float heal = enemyStats.abilities[abilityIndex].damage;
+                        enemyStats.ModifyAttribute(heal, Character.Attribute.Health);
+
+                        Debug.Log("Buff Type " + enemyStats.abilities[abilityIndex].abilityName);
+                        break;
+                    case AbilitySO.AbilityType.Recharge:
+                        enemyStats.PlayAttack();
+                        float manaCharge = enemyStats.abilities[abilityIndex].damage;
+                        enemyStats.ModifyAttribute(manaCharge, Character.Attribute.Mana);
+
+                        Debug.Log("Buff Type " + enemyStats.abilities[abilityIndex].abilityName);
+                        break;
+                    case AbilitySO.AbilityType.ATKBuff:
+                        enemyStats.PlayAttack();
+                        float atk_buff = enemyStats.abilities[abilityIndex].damage;
+                        enemyStats.ModifyAttribute(atk_buff, Character.Attribute.Attack);
+                        break;
+                    case AbilitySO.AbilityType.DEFBuff:
+                        enemyStats.PlayAttack();
+                        float def_buff = enemyStats.abilities[abilityIndex].damage;
+                        enemyStats.ModifyAttribute(def_buff, Character.Attribute.Defense);
+                        break;
+                    case AbilitySO.AbilityType.CCBuff:
+                        enemyStats.PlayAttack();
+                        float cc_buff = enemyStats.abilities[abilityIndex].damage;
+                        enemyStats.ModifyAttribute(cc_buff, Character.Attribute.CritChance);
+                        break;
+                    case AbilitySO.AbilityType.CDBuff:
+                        enemyStats.PlayAttack();
+                        float cd_buff = enemyStats.abilities[abilityIndex].damage;
+                        enemyStats.ModifyAttribute(cd_buff, Character.Attribute.CritDamage);
                         break;
                 }
                 enemyCurrentMana -= selectedAbility.manaCost;

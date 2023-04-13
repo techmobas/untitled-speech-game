@@ -290,7 +290,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.6875, y: 11.875}
+  m_Size: {x: 14.4375, y: 11.875}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -325,13 +325,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37d8d576fe9115c4387e71625acc42f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 50
-  attackPower: 5
-  defense: 5
-  maxMana: 15
+  maxHealth: 3500
+  maxMana: 350
+  attackPower: 750
+  defense: 100
+  criticalChance: 0.35
+  criticalDamage: 0.125
   abilities:
   - {fileID: 11400000, guid: 9d63f23ad1d244546b3dc9c7ee8e5728, type: 2}
-  - {fileID: 11400000, guid: 2de03bd87f29aaf469c62b4e4fb34896, type: 2}
+  - {fileID: 11400000, guid: 48170ecd76120f746b54fc26807d4ab4, type: 2}
+  - {fileID: 11400000, guid: c8f182802a27ab343ba37785a31ca74c, type: 2}
+  - {fileID: 11400000, guid: 7878ef2432f7c0442a093dc652835fd9, type: 2}
+  - {fileID: 11400000, guid: 31aeae05e56d0714fbb3f5a4da195d1d, type: 2}
+  - {fileID: 11400000, guid: a5c5535c5e4fb1d4e937a6e192df811c, type: 2}
+  - {fileID: 11400000, guid: 28718344b28633747a65f32cf6fee5fd, type: 2}
+  - {fileID: 11400000, guid: f240ed51c86be8c41b7f8626deabbdd2, type: 2}
+  - {fileID: 11400000, guid: 6b30f66b661470b46ae4794c66f36fe3, type: 2}
+  - {fileID: 11400000, guid: 9511f09f617fcab44a1889ab5291e3ff, type: 2}
+  - {fileID: 11400000, guid: eb8c0043d6a7cdd448f5a4abecd13ceb, type: 2}
+  - {fileID: 11400000, guid: 8f6bd3538ef68974f8181e578d233b65, type: 2}
+  - {fileID: 11400000, guid: 50efd243d22467749bcbb9ea9832d8e6, type: 2}
+  - {fileID: 11400000, guid: 2b4d131b3ccc9de458d8d57f7a0784f3, type: 2}
 --- !u!4 &340444984
 Transform:
   m_ObjectHideFlags: 0
@@ -742,14 +756,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37d8d576fe9115c4387e71625acc42f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  attackPower: 10
+  maxHealth: 3500
+  maxMana: 500
+  attackPower: 200
   defense: 10
-  maxMana: 50
+  criticalChance: 0.5
+  criticalDamage: 1
   abilities:
   - {fileID: 11400000, guid: 9d63f23ad1d244546b3dc9c7ee8e5728, type: 2}
   - {fileID: 11400000, guid: 7878ef2432f7c0442a093dc652835fd9, type: 2}
-  - {fileID: 11400000, guid: 41d6601355bcb124985e857b5a9fb78d, type: 2}
+  - {fileID: 11400000, guid: 48170ecd76120f746b54fc26807d4ab4, type: 2}
+  - {fileID: 11400000, guid: c8f182802a27ab343ba37785a31ca74c, type: 2}
+  - {fileID: 11400000, guid: 31aeae05e56d0714fbb3f5a4da195d1d, type: 2}
+  - {fileID: 11400000, guid: a5c5535c5e4fb1d4e937a6e192df811c, type: 2}
+  - {fileID: 11400000, guid: 28718344b28633747a65f32cf6fee5fd, type: 2}
+  - {fileID: 11400000, guid: f240ed51c86be8c41b7f8626deabbdd2, type: 2}
+  - {fileID: 11400000, guid: 6b30f66b661470b46ae4794c66f36fe3, type: 2}
+  - {fileID: 11400000, guid: 9511f09f617fcab44a1889ab5291e3ff, type: 2}
+  - {fileID: 11400000, guid: eb8c0043d6a7cdd448f5a4abecd13ceb, type: 2}
+  - {fileID: 11400000, guid: 8f6bd3538ef68974f8181e578d233b65, type: 2}
+  - {fileID: 11400000, guid: 2b4d131b3ccc9de458d8d57f7a0784f3, type: 2}
+  - {fileID: 11400000, guid: 50efd243d22467749bcbb9ea9832d8e6, type: 2}
 --- !u!4 &1213958916
 Transform:
   m_ObjectHideFlags: 0
@@ -948,25 +975,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BrainParameters:
-    VectorObservationSize: 1
-    NumStackedVectorObservations: 1
-    m_ActionSpec:
-      m_NumContinuousActions: 0
-      BranchSizes: 01000000
-    VectorActionSize: 01000000
-    VectorActionDescriptions: []
-    VectorActionSpaceType: 0
-    hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
-  m_InferenceDevice: 0
-  m_BehaviorType: 0
-  m_BehaviorName: My Behavior
-  TeamId: 0
-  m_UseChildSensors: 1
-  m_UseChildActuators: 1
-  m_DeterministicInference: 0
-  m_ObservableAttributeHandling: 0
 --- !u!4 &1677064647
 Transform:
   m_ObjectHideFlags: 0

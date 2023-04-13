@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
-  m_Name: Hello
+  m_Name: Vergil
   m_EditorClassIdentifier: 
-  abilityName: Hello
-  abilityKeyword: hello
-  manaCost: 5
-  damage: 10
-  abilityType: 0
+  abilityName: Vergil
+  abilityKeyword: i need more power
+  damage: 0.1
+  manaCost: 110
+  abilityType: 6
