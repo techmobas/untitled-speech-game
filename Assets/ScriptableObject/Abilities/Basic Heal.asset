@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
-  m_Name: Power Up
+  m_Name: Basic Heal
   m_EditorClassIdentifier: 
-  abilityName: Power Up
-  abilityKeyword: power up
-  damage: 100
-  manaCost: 80
-  abilityType: 0
+  abilityName: Basic Heal
+  abilityKeyword: divine grace
+  abilityDescription: Heals player
+  damage: 90
+  manaCost: 50
+  abilityType: 1
+  chargeType: 0
+  buffType: 0
+  duration: 0

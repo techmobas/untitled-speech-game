@@ -326,26 +326,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 3500
-  maxMana: 350
-  attackPower: 750
-  defense: 100
-  criticalChance: 0.35
-  criticalDamage: 0.125
+  maxMana: 500
+  attackPower: 200
+  defense: 10
+  criticalChance: 0.05
+  criticalDamage: 1
   abilities:
-  - {fileID: 11400000, guid: 9d63f23ad1d244546b3dc9c7ee8e5728, type: 2}
-  - {fileID: 11400000, guid: 48170ecd76120f746b54fc26807d4ab4, type: 2}
-  - {fileID: 11400000, guid: c8f182802a27ab343ba37785a31ca74c, type: 2}
-  - {fileID: 11400000, guid: 7878ef2432f7c0442a093dc652835fd9, type: 2}
-  - {fileID: 11400000, guid: 31aeae05e56d0714fbb3f5a4da195d1d, type: 2}
-  - {fileID: 11400000, guid: a5c5535c5e4fb1d4e937a6e192df811c, type: 2}
-  - {fileID: 11400000, guid: 28718344b28633747a65f32cf6fee5fd, type: 2}
-  - {fileID: 11400000, guid: f240ed51c86be8c41b7f8626deabbdd2, type: 2}
-  - {fileID: 11400000, guid: 6b30f66b661470b46ae4794c66f36fe3, type: 2}
-  - {fileID: 11400000, guid: 9511f09f617fcab44a1889ab5291e3ff, type: 2}
-  - {fileID: 11400000, guid: eb8c0043d6a7cdd448f5a4abecd13ceb, type: 2}
-  - {fileID: 11400000, guid: 8f6bd3538ef68974f8181e578d233b65, type: 2}
-  - {fileID: 11400000, guid: 50efd243d22467749bcbb9ea9832d8e6, type: 2}
-  - {fileID: 11400000, guid: 2b4d131b3ccc9de458d8d57f7a0784f3, type: 2}
+  - {fileID: 11400000, guid: 01056c25739d4d2499c1cd41378e82a4, type: 2}
+  - {fileID: 11400000, guid: 3b876e9e142ddd44f943d6f79d03a682, type: 2}
+  - {fileID: 11400000, guid: 75f950ab5fedb8f4aaebd828f42cc721, type: 2}
+  - {fileID: 11400000, guid: 8bfdfa2362bfef74e9f5a93d8ad6a593, type: 2}
+  - {fileID: 11400000, guid: 78d40d17a15a3d44a97f39fd5f808b90, type: 2}
+  - {fileID: 11400000, guid: 03e1cc58487dd5c45b0080d8819f1aaa, type: 2}
+  activeBuffs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &340444984
 Transform:
   m_ObjectHideFlags: 0
@@ -760,23 +757,20 @@ MonoBehaviour:
   maxMana: 500
   attackPower: 200
   defense: 10
-  criticalChance: 0.5
+  criticalChance: 0.05
   criticalDamage: 1
   abilities:
-  - {fileID: 11400000, guid: 9d63f23ad1d244546b3dc9c7ee8e5728, type: 2}
-  - {fileID: 11400000, guid: 7878ef2432f7c0442a093dc652835fd9, type: 2}
-  - {fileID: 11400000, guid: 48170ecd76120f746b54fc26807d4ab4, type: 2}
-  - {fileID: 11400000, guid: c8f182802a27ab343ba37785a31ca74c, type: 2}
-  - {fileID: 11400000, guid: 31aeae05e56d0714fbb3f5a4da195d1d, type: 2}
-  - {fileID: 11400000, guid: a5c5535c5e4fb1d4e937a6e192df811c, type: 2}
-  - {fileID: 11400000, guid: 28718344b28633747a65f32cf6fee5fd, type: 2}
-  - {fileID: 11400000, guid: f240ed51c86be8c41b7f8626deabbdd2, type: 2}
-  - {fileID: 11400000, guid: 6b30f66b661470b46ae4794c66f36fe3, type: 2}
-  - {fileID: 11400000, guid: 9511f09f617fcab44a1889ab5291e3ff, type: 2}
-  - {fileID: 11400000, guid: eb8c0043d6a7cdd448f5a4abecd13ceb, type: 2}
-  - {fileID: 11400000, guid: 8f6bd3538ef68974f8181e578d233b65, type: 2}
-  - {fileID: 11400000, guid: 2b4d131b3ccc9de458d8d57f7a0784f3, type: 2}
-  - {fileID: 11400000, guid: 50efd243d22467749bcbb9ea9832d8e6, type: 2}
+  - {fileID: 11400000, guid: 01056c25739d4d2499c1cd41378e82a4, type: 2}
+  - {fileID: 11400000, guid: 3b876e9e142ddd44f943d6f79d03a682, type: 2}
+  - {fileID: 11400000, guid: 75f950ab5fedb8f4aaebd828f42cc721, type: 2}
+  - {fileID: 11400000, guid: 8bfdfa2362bfef74e9f5a93d8ad6a593, type: 2}
+  - {fileID: 11400000, guid: 78d40d17a15a3d44a97f39fd5f808b90, type: 2}
+  - {fileID: 11400000, guid: 03e1cc58487dd5c45b0080d8819f1aaa, type: 2}
+  activeBuffs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &1213958916
 Transform:
   m_ObjectHideFlags: 0
@@ -815,7 +809,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1582248308}
   - component: {fileID: 1582248307}
-  - component: {fileID: 1582248306}
   m_Layer: 0
   m_Name: MicTest
   m_TagString: Untagged
@@ -823,18 +816,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1582248306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582248305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33b5578640b52634ebf947dd7c464d60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &1582248307
 AudioSource:
   m_ObjectHideFlags: 0
@@ -946,50 +927,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1677064645
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1677064647}
-  - component: {fileID: 1677064646}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1677064646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1677064645}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1677064647
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1677064645}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1891008123 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6482621915896607747, guid: b4b605d62442afe4cbe57075604f582d, type: 3}
@@ -1047,7 +984,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1213958914}
   enemy: {fileID: 340444982}
-  timeBetweenTurns: 2
+  timeBetweenTurns: 1
+  turnCounter: 0
 --- !u!114 &2097217414 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2568822447384540803, guid: b4b605d62442afe4cbe57075604f582d, type: 3}

@@ -1,18 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MyBox;
 
 
 namespace USG.Character
 {
-    public enum Attribute {
-        Health,
-        Mana,
-        Attack,
-        Defense,
-        CritChance,
-        CritDamage
-    }
 
     public class CharacterStats : MonoBehaviour
     {
@@ -36,11 +29,12 @@ namespace USG.Character
 
         public AbilitySO[] abilities;
 
+        [SerializeField][ReadOnly] AbilitySO[] activeBuffs = new AbilitySO[4];
+
 
 
         [Header("Character Animation")]
         private Animator playAnim;
-        private int attackID;
 
         private void Start()
         {
@@ -51,9 +45,11 @@ namespace USG.Character
         }
 
 		private void Update() {
+
             if (maxHealth >= 5000) {
                 maxHealth = 5000;
             }
+
             if (maxMana >= 500) {
                 maxMana = 500;
             }
@@ -70,6 +66,7 @@ namespace USG.Character
             if (criticalDamage >= 2f) {
                 criticalDamage = 2f;
             }
+            
         }
 
 		public string[] GetAbilityNames()
@@ -91,40 +88,110 @@ namespace USG.Character
             }
         }
 
-        public void ModifyAttribute(float amount, Attribute attribute) {
-            switch (attribute) {
-                case Attribute.Health:
-                    currentHealth += amount;
-                    break;
-                case Attribute.Mana:
-                    float newMana = currentMana += amount;
-                    SetCurrentMana(newMana);
-                    break;
-                case Attribute.Attack:
-                    attackPower += amount;
-                    break;
-                case Attribute.Defense:
-                    defense += amount;
-                    break;
-                case Attribute.CritChance:
-                    criticalChance += amount;
-                    break;
-                case Attribute.CritDamage:
-                    criticalDamage += amount;
-                    break;
-                default:
-                    break;
-            }
-        }
-
         public void SetCurrentMana(float newMana) {
-            currentMana = Mathf.Clamp(newMana, 0, maxMana); // Make sure currentMana doesn't exceed maxMana or go below 0
+            currentMana = Mathf.Clamp(newMana, 0, maxMana); 
             Debug.Log("Current mana set to: " + currentMana);
         }
 
-        public void PlayAttack() {
+        public void SetCurrentHealth(float newHP) {
+            currentHealth = Mathf.Clamp(newHP, 0, maxHealth); 
+            Debug.Log("Current HP set to: " + currentHealth);
+        }
+
+        public void ApplyBuff(AbilitySO buff) {
+            // Create a copy of the buff to avoid modifying the asset in the project
+            AbilitySO buffCopy = Instantiate(buff);
+
+            // Check if the buff is already active
+            for (int i = 0; i < activeBuffs.Length; i++) {
+                AbilitySO activeBuff = activeBuffs[i];
+                if (activeBuff != null && activeBuff.name == buffCopy.name) {
+                    // If the buff is already active, refresh the duration
+                    activeBuff.duration = buffCopy.duration;
+                    Debug.Log("Buff refreshed: " + activeBuff.name);
+                    return;
+                }
+            }
+
+            // Find an empty slot for the new buff
+            for (int i = 0; i < activeBuffs.Length; i++) {
+                if (activeBuffs[i] == null) {
+                    activeBuffs[i] = buffCopy;
+                    Debug.Log("Buff applied: " + activeBuffs[i].name);
+                    ApplyBuffEffects();
+                    return;
+                }
+            }
+
+            // If all slots are full, override the oldest buff
+            int oldestBuffIndex = 0;
+            int oldestBuffDuration = activeBuffs[0].duration;
+            for (int i = 1; i < activeBuffs.Length; i++) {
+                if (activeBuffs[i] != null && activeBuffs[i].duration < oldestBuffDuration) {
+                    oldestBuffIndex = i;
+                    oldestBuffDuration = activeBuffs[i].duration;
+                }
+            }
+            activeBuffs[oldestBuffIndex] = buffCopy;
+            Debug.Log("Buff applied: " + activeBuffs[oldestBuffIndex].name);
+            ApplyBuffEffects();
+        }
+
+        public void UpdateBuffs() {
+            for (int i = 0; i < activeBuffs.Length; i++) {
+                AbilitySO activeBuff = activeBuffs[i];
+                if (activeBuff != null) {
+                    // Update the duration
+                    activeBuff.duration -= 1;
+                    // Check if the buff has expired
+                    if (activeBuff.duration < 0) {
+                        // Remove the buff
+                        activeBuffs[i] = null;
+
+                        // Reverse the effect of the buff
+                        switch (activeBuff.buffType) {
+                            case AbilitySO.BuffType.Attack:
+                                attackPower -= activeBuff.damage;
+                                break;
+                            case AbilitySO.BuffType.Defense:
+                                defense -= activeBuff.damage;
+                                break;
+                            case AbilitySO.BuffType.CriticalChance:
+                                criticalChance -= activeBuff.damage;
+                                break;
+                            case AbilitySO.BuffType.CriticalDamage:
+                                criticalDamage -= activeBuff.damage;
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void ApplyBuffEffects() {
+            for (int i = 0; i < activeBuffs.Length; i++) {
+                AbilitySO activeBuff = activeBuffs[i];
+                if (activeBuff != null) {
+                    switch (activeBuff.buffType) {
+                        case AbilitySO.BuffType.Attack:
+                            attackPower += activeBuff.damage;
+                            break;
+                        case AbilitySO.BuffType.Defense:
+                            defense += activeBuff.damage;
+                            break;
+                        case AbilitySO.BuffType.CriticalChance:
+                            criticalChance += activeBuff.damage;
+                            break;
+                        case AbilitySO.BuffType.CriticalDamage:
+                            criticalDamage += activeBuff.damage;
+                            break;
+                    }
+                }
+            }
+        }
+
+        public void PlayAttack(int attackID) {
             playAnim.SetTrigger("Attack");
-            attackID = Random.Range(1, 2);
             playAnim.SetInteger("AttackID", attackID);
         }
 

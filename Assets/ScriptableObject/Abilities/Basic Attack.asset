@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
-  m_Name: Vergil
+  m_Name: Basic Attack
   m_EditorClassIdentifier: 
-  abilityName: Vergil
-  abilityKeyword: i need more power
-  damage: 0.1
-  manaCost: 110
-  abilityType: 6
+  abilityName: Basic Attack
+  abilityKeyword: attack
+  abilityDescription: Deal basic damage to enemy, requires no mana
+  damage: 100
+  manaCost: 0
+  abilityType: 0
+  chargeType: 1
+  buffType: 0
+  duration: 0

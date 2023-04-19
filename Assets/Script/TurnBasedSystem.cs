@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using USG.Character;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
+using MyBox;
 
 namespace USG.Mechanics {
     public enum GameState {
@@ -27,6 +28,8 @@ namespace USG.Mechanics {
         
         [SerializeField] float timeBetweenTurns;
         bool playerActionSuccess;
+
+        [SerializeField][ReadOnly]private int turnCounter;
 
         void Start() {
             playerStats = player.GetComponent<CharacterStats>();
@@ -93,7 +96,8 @@ namespace USG.Mechanics {
                         Debug.Log("Player's turn");
 
                         yield return StartCoroutine(PlayerTurn());
-						
+                        turnCounter += 1;
+
                         if (WinCondition()) {
                             gameState = GameState.GameOver;
                         }
@@ -108,6 +112,9 @@ namespace USG.Mechanics {
                         Debug.Log("Enemy turn");
 
                         yield return StartCoroutine(EnemyTurn());
+                        turnCounter += 1;
+                        
+
                         if (WinCondition()) {
                             gameState = GameState.GameOver;
                         }
@@ -134,6 +141,7 @@ namespace USG.Mechanics {
 
         IEnumerator PlayerTurn() {
             Debug.Log("Waiting for player input...");
+            playerStats.UpdateBuffs();
 
             // Start recording audio from the microphone
             AudioClip audioClip = Microphone.Start(null, false, 10, 44100);
@@ -143,26 +151,26 @@ namespace USG.Mechanics {
             keywordRecognizer.Start();
 
             yield return new WaitUntil(() => playerActionSuccess);
-
+            
             Microphone.End(null);
 
             keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
             keywordRecognizer.Stop();
 
-            if (audioClip != null) {
-                // Save the audio clip if there was a successful action
-                if (playerActionSuccess) {
-                    float endTime = Time.time;
-                    float recordingLength = endTime - startTime;
+            //if (audioClip != null) {
+            //    // Save the audio clip if there was a successful action
+            //    if (playerActionSuccess) {
+            //        float endTime = Time.time;
+            //        float recordingLength = endTime - startTime;
 
-                    // Save the audio clip to a WAV file in the project's Assets folder
-                    SavWav.Save("Assets/player_action_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".wav", audioClip);
-                }
-                // If there was no successful action, discard the audio clip
-                else {
-                    Destroy(audioClip);
-                }
-            }
+            //        // Save the audio clip to a WAV file in the project's Assets folder
+            //        SavWav.Save("Assets/player_action_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".wav", audioClip);
+            //    }
+            //    // If there was no successful action, discard the audio clip
+            //    else {
+            //        Destroy(audioClip);
+            //    }
+            //}
         }
 
         void PlayerUseAbility(string abilityName) {
@@ -182,7 +190,7 @@ namespace USG.Mechanics {
                     playerCurrentMana -= selectedAbility.manaCost;
                     switch (selectedAbility.abilityType) {
                         case AbilitySO.AbilityType.Damage:
-                            playerStats.PlayAttack();
+                            playerStats.PlayAttack(1);
 
                             float realDamage;
                             
@@ -200,50 +208,35 @@ namespace USG.Mechanics {
                             enemyStats.TakeDamage(realDamage);
                             enemyStats.PlayStagger();
                             Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + realDamage);
+                            playerStats.SetCurrentMana(playerCurrentMana);
                             break;
-                        case AbilitySO.AbilityType.Heal:
-                            playerStats.PlayAttack();
 
-                            float heal = selectedAbility.damage;
-                            playerStats.ModifyAttribute(heal, Character.Attribute.Attack);
+                        case AbilitySO.AbilityType.Charge:
+                            playerStats.PlayAttack(0);
+
+							if (selectedAbility.chargeType == AbilitySO.ChargeType.Heal) {
+                                float playerHP = playerStats.CurrentHealth();
+                                playerHP += selectedAbility.damage;
+                                playerStats.SetCurrentHealth(playerHP);
+                                playerStats.SetCurrentMana(playerCurrentMana);
+                                Debug.Log("Using " + selectedAbility.abilityName);
+                            }
+                            else if (selectedAbility.chargeType == AbilitySO.ChargeType.Mana) {
+                                playerCurrentMana += selectedAbility.damage;
+                                playerStats.SetCurrentMana(playerCurrentMana);
+                                Debug.Log("Using " + selectedAbility.abilityName);
+                            }
                             break;
-                        case AbilitySO.AbilityType.Recharge:
-                            playerStats.PlayAttack();
+                        case AbilitySO.AbilityType.Buff:
+                            playerStats.PlayAttack(0);
 
-                            float mana_charge = selectedAbility.damage;
-                            playerStats.ModifyAttribute(mana_charge, Character.Attribute.Attack);
-                           
-                            break;
-                        case AbilitySO.AbilityType.ATKBuff:
-                            playerStats.PlayAttack();
-
-                            float atk_buff = selectedAbility.damage;
-                            playerStats.ModifyAttribute(atk_buff, Character.Attribute.Attack);
-
-                            break;
-                        case AbilitySO.AbilityType.DEFBuff:
-                            playerStats.PlayAttack();
-
-                            float def_buff = selectedAbility.damage;
-                            playerStats.ModifyAttribute(def_buff, Character.Attribute.Defense);
-
-                            break;
-                        case AbilitySO.AbilityType.CCBuff:
-                            playerStats.PlayAttack();
-
-                            float cc_buff = selectedAbility.damage;
-                            playerStats.ModifyAttribute(cc_buff, Character.Attribute.CritChance);
-
-                            break;
-                        case AbilitySO.AbilityType.CDBuff:
-                            playerStats.PlayAttack();
-
-                            float cd_buff = selectedAbility.damage;
-                            playerStats.ModifyAttribute(cd_buff, Character.Attribute.CritDamage);
-
+                            playerStats.ApplyBuff(selectedAbility);
+                        
+                            playerStats.SetCurrentMana(playerCurrentMana);
+                            Debug.Log("Added " + selectedAbility.abilityName);
                             break;
                     }
-                    playerStats.SetCurrentMana(playerCurrentMana);
+                   
                 }
                 else {
                     Debug.Log("Not enough mana to use " + selectedAbility.abilityName);
@@ -256,18 +249,20 @@ namespace USG.Mechanics {
 
         IEnumerator EnemyTurn() {
             Debug.Log("Waiting for enemy input...");
+            enemyStats.UpdateBuffs();
             float enemyCurrentMana = enemyStats.CurrentMana();
 
             if (enemyCurrentMana > 0) {
 
                 int abilityIndex = UnityEngine.Random.Range(0, enemyStats.abilities.Length);
                 AbilitySO selectedAbility = enemyStats.abilities[abilityIndex];
+                enemyCurrentMana -= selectedAbility.manaCost;
                 switch (selectedAbility.abilityType) {
                     case AbilitySO.AbilityType.Damage:
                         float realDamage;
                         float randomValue = UnityEngine.Random.Range(0f, 1f);
 
-                        float rawOutcome = enemyStats.abilities[abilityIndex].damage + enemyStats.AttackPower() - playerStats.Defense();
+                        float rawOutcome = selectedAbility.damage + enemyStats.AttackPower() - playerStats.Defense();
 
                         if (randomValue > enemyStats.GetCC()) {
 
@@ -280,49 +275,36 @@ namespace USG.Mechanics {
                         }
 
                         // Play attack animation
-                        enemyStats.PlayAttack();
+                        enemyStats.PlayAttack(1);
 
                         playerStats.TakeDamage(realDamage);
                         playerStats.PlayStagger();
-                        Debug.Log("Damage Dealt by " + enemyStats.abilities[abilityIndex].abilityName + " for " + realDamage);
+                        Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + realDamage);
                         break;
-                    case AbilitySO.AbilityType.Heal:
-                        enemyStats.PlayAttack();
-                        float heal = enemyStats.abilities[abilityIndex].damage;
-                        enemyStats.ModifyAttribute(heal, Character.Attribute.Health);
+                    case AbilitySO.AbilityType.Charge:
+                        enemyStats.PlayAttack(0);
 
-                        Debug.Log("Buff Type " + enemyStats.abilities[abilityIndex].abilityName);
+                        if (selectedAbility.chargeType == AbilitySO.ChargeType.Heal) {
+                            float enemyHP = enemyStats.CurrentHealth();
+                            enemyHP += selectedAbility.damage;
+                            enemyStats.SetCurrentHealth(enemyHP);
+                            enemyStats.SetCurrentMana(enemyCurrentMana);
+                            Debug.Log("Using " + selectedAbility.abilityName);
+                        }
+                        else if (selectedAbility.chargeType == AbilitySO.ChargeType.Mana) {
+                            enemyCurrentMana += selectedAbility.damage;
+                            enemyStats.SetCurrentMana(enemyCurrentMana);
+                            Debug.Log("Using " + selectedAbility.abilityName);
+                        }
                         break;
-                    case AbilitySO.AbilityType.Recharge:
-                        enemyStats.PlayAttack();
-                        float manaCharge = enemyStats.abilities[abilityIndex].damage;
-                        enemyStats.ModifyAttribute(manaCharge, Character.Attribute.Mana);
+                    case AbilitySO.AbilityType.Buff:
+                        enemyStats.PlayAttack(0);
 
-                        Debug.Log("Buff Type " + enemyStats.abilities[abilityIndex].abilityName);
-                        break;
-                    case AbilitySO.AbilityType.ATKBuff:
-                        enemyStats.PlayAttack();
-                        float atk_buff = enemyStats.abilities[abilityIndex].damage;
-                        enemyStats.ModifyAttribute(atk_buff, Character.Attribute.Attack);
-                        break;
-                    case AbilitySO.AbilityType.DEFBuff:
-                        enemyStats.PlayAttack();
-                        float def_buff = enemyStats.abilities[abilityIndex].damage;
-                        enemyStats.ModifyAttribute(def_buff, Character.Attribute.Defense);
-                        break;
-                    case AbilitySO.AbilityType.CCBuff:
-                        enemyStats.PlayAttack();
-                        float cc_buff = enemyStats.abilities[abilityIndex].damage;
-                        enemyStats.ModifyAttribute(cc_buff, Character.Attribute.CritChance);
-                        break;
-                    case AbilitySO.AbilityType.CDBuff:
-                        enemyStats.PlayAttack();
-                        float cd_buff = enemyStats.abilities[abilityIndex].damage;
-                        enemyStats.ModifyAttribute(cd_buff, Character.Attribute.CritDamage);
+                        enemyStats.ApplyBuff(selectedAbility);
+                        playerStats.SetCurrentMana(enemyCurrentMana);
+                        Debug.Log("Added " + selectedAbility.abilityName);
                         break;
                 }
-                enemyCurrentMana -= selectedAbility.manaCost;
-                enemyStats.SetCurrentMana(enemyCurrentMana);
             }
             else {
                 Debug.Log("Enemy run out of mana");
