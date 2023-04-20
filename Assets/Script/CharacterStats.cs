@@ -9,6 +9,7 @@ namespace USG.Character
 
     public class CharacterStats : MonoBehaviour
     {
+        [Header("Stats Attributes")]
         [SerializeField] protected float maxHealth;
         protected float currentHealth;
         [SerializeField] protected float maxMana;
@@ -17,6 +18,7 @@ namespace USG.Character
         [SerializeField] protected float defense;
         [SerializeField] protected float criticalChance;
         [SerializeField] protected float criticalDamage;
+        public bool isCritical;
 
         public float MaxHealth() { return maxHealth; }
         public float CurrentHealth() { return currentHealth; }
@@ -27,14 +29,16 @@ namespace USG.Character
         public float GetCC() { return criticalChance; }
         public float GetCD() { return criticalDamage; }
 
+        [Header("Buff Attributes")]
         public AbilitySO[] abilities;
-
         [SerializeField][ReadOnly] AbilitySO[] activeBuffs = new AbilitySO[4];
-
-
 
         [Header("Character Animation")]
         private Animator playAnim;
+
+        [Header("Canvas Control")]
+        [SerializeField] RectTransform statusCanvas;
+        [SerializeField] RectTransform iconGroup;
 
         private void Start()
         {
@@ -81,11 +85,21 @@ namespace USG.Character
 
         public void TakeDamage(float damage)
         {
+            if (isCritical) {
+                StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, damage.ToString(), Color.yellow, isCritical);
+            }
+			else {
+                StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, damage.ToString(), Color.white, isCritical);
+            }
             currentHealth -= damage;
             if (currentHealth <= 0)
             {
                 StartCoroutine(CharacterDead());
             }
+        }
+
+        public void Regenerate(float regenValue, Color color) {
+            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, regenValue.ToString(), color, false);
         }
 
         public void SetCurrentMana(float newMana) {
@@ -118,7 +132,9 @@ namespace USG.Character
                 if (activeBuffs[i] == null) {
                     activeBuffs[i] = buffCopy;
                     Debug.Log("Buff applied: " + activeBuffs[i].name);
+                    
                     ApplyBuffEffects();
+                    StatsUIManager.Instance.AddBuffIcon(iconGroup, transform.position, buffCopy);
                     return;
                 }
             }
@@ -134,6 +150,8 @@ namespace USG.Character
             }
             activeBuffs[oldestBuffIndex] = buffCopy;
             Debug.Log("Buff applied: " + activeBuffs[oldestBuffIndex].name);
+
+            StatsUIManager.Instance.AddBuffIcon(iconGroup, transform.position, buffCopy);
             ApplyBuffEffects();
         }
 
@@ -163,6 +181,7 @@ namespace USG.Character
                                 criticalDamage -= activeBuff.damage;
                                 break;
                         }
+                        StatsUIManager.Instance.RemoveBuffIcon(activeBuff);
                     }
                 }
             }
@@ -175,15 +194,19 @@ namespace USG.Character
                     switch (activeBuff.buffType) {
                         case AbilitySO.BuffType.Attack:
                             attackPower += activeBuff.damage;
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "ATK UP", Color.red, false);
                             break;
                         case AbilitySO.BuffType.Defense:
                             defense += activeBuff.damage;
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "DEF Up", Color.magenta, false);
                             break;
                         case AbilitySO.BuffType.CriticalChance:
                             criticalChance += activeBuff.damage;
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "CC% UP", Color.yellow, false);
                             break;
                         case AbilitySO.BuffType.CriticalDamage:
                             criticalDamage += activeBuff.damage;
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "CDMG% Up", Color.yellow, false);
                             break;
                     }
                 }

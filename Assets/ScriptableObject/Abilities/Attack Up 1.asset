@@ -21,3 +21,4 @@ MonoBehaviour:
   chargeType: 0
   buffType: 0
   duration: 3
+  icon: {fileID: -837144412, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}

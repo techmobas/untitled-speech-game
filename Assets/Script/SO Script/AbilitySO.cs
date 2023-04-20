@@ -26,6 +26,8 @@ public class AbilitySO : ScriptableObject
     public BuffType buffType;
     [ConditionalField(nameof(abilityType), false, AbilityType.Buff)]
     public int duration;
+    [ConditionalField(nameof(abilityType), false, AbilityType.Buff)]
+    public Sprite icon;
 
     public enum AbilityType
 	{
