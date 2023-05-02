@@ -24,16 +24,24 @@ public class AbilitySO : ScriptableObject
 
     [ConditionalField(nameof(abilityType), false, AbilityType.Buff)]
     public BuffType buffType;
-    [ConditionalField(nameof(abilityType), false, AbilityType.Buff)]
+
+    [ConditionalField(nameof(abilityType), false, AbilityType.Debuff)]
+    public DebuffType debuffType;
+
+    [ConditionalField(nameof(abilityType), false, AbilityType.Buff, AbilityType.Debuff)]
     public int duration;
-    [ConditionalField(nameof(abilityType), false, AbilityType.Buff)]
+    [ConditionalField(nameof(abilityType), false, AbilityType.Buff, AbilityType.Debuff)]
     public Sprite icon;
+
+    [Header("Ability Type")]
+    public GameObject effect;
 
     public enum AbilityType
 	{
         Damage,
         Charge,
-        Buff
+        Buff,
+        Debuff
     }
 
     public enum ChargeType{
@@ -46,5 +54,10 @@ public class AbilitySO : ScriptableObject
        Defense,
        CriticalChance,
        CriticalDamage
+    }
+
+    public enum DebuffType {
+        Attack,
+        Defense,
     }
 }

@@ -5,6 +5,7 @@ using USG.Character;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 using MyBox;
+using TMPro;
 
 namespace USG.Mechanics {
     public enum GameState {
@@ -14,11 +15,11 @@ namespace USG.Mechanics {
     }
 
     public class TurnManager : MonoBehaviour {
-        public GameObject player;
-        public GameObject enemy;
+        //public GameObject player;
+        //public GameObject enemy;
 
-        CharacterStats playerStats;
-        CharacterStats enemyStats;
+        private CharacterStats playerStats;
+        private CharacterStats enemyStats;
 
         private string[] keywords;
 
@@ -32,9 +33,26 @@ namespace USG.Mechanics {
 
         [SerializeField][ReadOnly]private int turnCounter;
 
+        [Header("Subtitle")]
+        [SerializeField] TextMeshProUGUI subtitle;
+
         void Start() {
-            playerStats = player.GetComponent<CharacterStats>();
-            enemyStats = enemy.GetComponent<CharacterStats>();
+            GameObject playerObj = GameObject.Find("Player");
+            if (playerObj != null) {
+                playerStats = playerObj.GetComponent<CharacterStats>();
+            }
+            else {
+                Debug.LogError("TurnManager: Could not find Player object.");
+            }
+
+            GameObject enemyObject = GameObject.FindGameObjectWithTag("Enemy");
+            if (enemyObject != null) {
+                enemyStats = enemyObject.GetComponent<CharacterStats>();
+            }
+            else {
+                Debug.LogError("Could not find enemy with tag 'Enemy'");
+            }
+
 
             // Add the player's abilities as keywords for the PhraseRecognizer
             keywords = playerStats.GetAbilityNames();
@@ -48,7 +66,8 @@ namespace USG.Mechanics {
             StartCoroutine(TakeTurn());
         }
 
-        private void OnPhraseRecognized(PhraseRecognizedEventArgs args) {
+		#region Speech System
+		private void OnPhraseRecognized(PhraseRecognizedEventArgs args) {
             if (string.IsNullOrEmpty(args.text)) {
                 Debug.LogWarning("No phrase was recognized");
                 return;
@@ -66,7 +85,8 @@ namespace USG.Mechanics {
             }
 
             Debug.Log("Phrase recognized: " + recognizedText);
-            playerActionSuccess = true;
+            subtitle.text = "Player says : " + recognizedText.ToUpper(); 
+
             keywordRecognizer.Stop();
 
             if (Array.IndexOf(abilityKeyword, recognizedText) >= 0) {
@@ -90,7 +110,10 @@ namespace USG.Mechanics {
                 }
             }
         }
-        IEnumerator TakeTurn() {
+		#endregion
+
+		#region Take Turns
+		IEnumerator TakeTurn() {
             while (gameState != GameState.GameOver) {
                 switch (gameState) {
                     case GameState.PlayerTurn:
@@ -139,8 +162,10 @@ namespace USG.Mechanics {
             }
             return false;
         }
+		#endregion
 
-        IEnumerator PlayerTurn() {
+		#region Player Turn
+		IEnumerator PlayerTurn() {
             Debug.Log("Waiting for player input...");
             playerStats.UpdateBuffs();
 
@@ -174,7 +199,8 @@ namespace USG.Mechanics {
             //}
         }
 
-        void PlayerUseAbility(string abilityName) {
+		
+		void PlayerUseAbility(string abilityName) {
             AbilitySO selectedAbility = null;
             foreach (AbilitySO ability in playerStats.abilities) {
                 if (ability.abilityKeyword == abilityName) {
@@ -195,21 +221,22 @@ namespace USG.Mechanics {
 
                             float rawOutcome = selectedAbility.damage + (playerStats.AttackPower() * .5f) - enemyStats.Defense();
 
-                            if (UnityEngine.Random.Range(0f, 1f) >= playerStats.GetCC()) {
-                                playerStats.isCritical = true;
+                            if (UnityEngine.Random.Range(0f, 1f) <= playerStats.GetCC()) {
                                 float critOutcome = rawOutcome * (1 + playerStats.GetCD());
                                 realDamage = critOutcome;
 
                                 Debug.Log("Woooo Yeah Baby! That's what i'm waiting for, that what is all about");
+                                enemyStats.TakeDamage(realDamage, Color.yellow, true);
                             }
 							else {
-                                playerStats.isCritical = false;
                                 realDamage = rawOutcome;
-							}
-                            enemyStats.TakeDamage(realDamage);
-                            enemyStats.PlayStagger();
+                                enemyStats.TakeDamage(realDamage, Color.white, false);
+                            }
+
                             Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + realDamage);
                             playerStats.SetCurrentMana(playerCurrentMana);
+
+                            enemyStats.SpawnEffect(selectedAbility.effect);
                             break;
 
                         case AbilitySO.AbilityType.Charge:
@@ -237,13 +264,24 @@ namespace USG.Mechanics {
                                 playerStats.SetCurrentMana(playerCurrentMana);
                                 Debug.Log("Using " + selectedAbility.abilityName);
                             }
+                            
                             break;
+
                         case AbilitySO.AbilityType.Buff:
                             playerStats.PlayAttack(0);
 
                             playerStats.ApplyBuff(selectedAbility);
-                        
                             playerStats.SetCurrentMana(playerCurrentMana);
+                            
+                            Debug.Log("Added " + selectedAbility.abilityName);
+                            break;
+
+                        case AbilitySO.AbilityType.Debuff:
+                            playerStats.PlayAttack(0);
+
+                            enemyStats.ApplyDebuff(selectedAbility);
+                            playerStats.SetCurrentMana(playerCurrentMana);
+
                             Debug.Log("Added " + selectedAbility.abilityName);
                             break;
                     }
@@ -256,8 +294,12 @@ namespace USG.Mechanics {
             else {
                 Debug.Log(selectedAbility.abilityName + " not found");
             }
+            playerActionSuccess = true;
         }
 
+        #endregion
+
+        #region Enemy Turn
         IEnumerator EnemyTurn() {
             Debug.Log("Waiting for enemy input...");
             enemyStats.UpdateBuffs();
@@ -272,23 +314,24 @@ namespace USG.Mechanics {
                     case AbilitySO.AbilityType.Damage:
                         float rawOutcome = selectedAbility.damage + enemyStats.AttackPower() - playerStats.Defense();
 
-                        if (UnityEngine.Random.Range(0f, 1f) > enemyStats.GetCC()) {
-                            enemyStats.isCritical = true;
+                        if (UnityEngine.Random.Range(0f, 1f) <= enemyStats.GetCC()) {
                             float critOutcome = rawOutcome * (1 + enemyStats.GetCD());
                             realDamage = critOutcome;
                             Debug.Log("Woooo Yeah Baby! That's what i'm waiting for, that what is all about");
+
+                            playerStats.TakeDamage(realDamage, Color.yellow, true);
                         }
                         else {
-                            enemyStats.isCritical = false;
                             realDamage = rawOutcome;
+                            playerStats.TakeDamage(realDamage, Color.white, false);
                         }
 
                         // Play attack animation
                         enemyStats.PlayAttack(1);
 
-                        playerStats.TakeDamage(realDamage);
-                        playerStats.PlayStagger();
                         Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + realDamage);
+
+                        playerStats.SpawnEffect(selectedAbility.effect);
                         break;
                     case AbilitySO.AbilityType.Charge:
                         enemyStats.PlayAttack(0);
@@ -302,6 +345,7 @@ namespace USG.Mechanics {
 
                             enemyStats.SetCurrentHealth(enemyHP);
                             enemyStats.SetCurrentMana(enemyCurrentMana);
+
                             Debug.Log("Using " + selectedAbility.abilityName);
                         }
                         else if (selectedAbility.chargeType == AbilitySO.ChargeType.Mana) {
@@ -311,14 +355,26 @@ namespace USG.Mechanics {
                             enemyStats.Regenerate(regenValue, Color.cyan);
 
                             enemyStats.SetCurrentMana(enemyCurrentMana);
+
                             Debug.Log("Using " + selectedAbility.abilityName);
                         }
+                       
                         break;
                     case AbilitySO.AbilityType.Buff:
                         enemyStats.PlayAttack(0);
 
                         enemyStats.ApplyBuff(selectedAbility);
-                        playerStats.SetCurrentMana(enemyCurrentMana);
+                        enemyStats.SetCurrentMana(enemyCurrentMana);
+
+                        
+                        Debug.Log("Added " + selectedAbility.abilityName);
+                        break;
+                    case AbilitySO.AbilityType.Debuff:
+                        playerStats.PlayAttack(0);
+
+                        playerStats.ApplyDebuff(selectedAbility);
+                        enemyStats.SetCurrentMana(enemyCurrentMana);
+
                         Debug.Log("Added " + selectedAbility.abilityName);
                         break;
                 }
@@ -329,5 +385,6 @@ namespace USG.Mechanics {
             playerActionSuccess = false;
             yield return null;
         }
-    }
+		#endregion
+	}
 }

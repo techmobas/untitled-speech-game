@@ -18,7 +18,6 @@ namespace USG.Character
         [SerializeField] protected float defense;
         [SerializeField] protected float criticalChance;
         [SerializeField] protected float criticalDamage;
-        public bool isCritical;
 
         public float MaxHealth() { return maxHealth; }
         public float CurrentHealth() { return currentHealth; }
@@ -31,7 +30,7 @@ namespace USG.Character
 
         [Header("Buff Attributes")]
         public AbilitySO[] abilities;
-        [SerializeField][ReadOnly] AbilitySO[] activeBuffs = new AbilitySO[4];
+        [SerializeField] [ReadOnly] List<AbilitySO> activeBuffs = new List<AbilitySO>();
 
         [Header("Character Animation")]
         private Animator playAnim;
@@ -83,15 +82,11 @@ namespace USG.Character
             return abilityKeyword.ToArray();
         }
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, Color color, bool isCrit)
         {
-            if (isCritical) {
-                StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, damage.ToString(), Color.yellow, isCritical);
-            }
-			else {
-                StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, damage.ToString(), Color.white, isCritical);
-            }
+            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, damage.ToString(), color, isCrit);
             currentHealth -= damage;
+            PlayStagger();
             if (currentHealth <= 0)
             {
                 StartCoroutine(CharacterDead());
@@ -112,12 +107,18 @@ namespace USG.Character
             Debug.Log("Current HP set to: " + currentHealth);
         }
 
+        public void SpawnEffect(GameObject effect) {
+            GameObject fx = Instantiate(effect, transform.position, Quaternion.identity);
+            Destroy(fx.gameObject, fx.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        }
+
+        #region Buff Logic
         public void ApplyBuff(AbilitySO buff) {
             // Create a copy of the buff to avoid modifying the asset in the project
             AbilitySO buffCopy = Instantiate(buff);
 
             // Check if the buff is already active
-            for (int i = 0; i < activeBuffs.Length; i++) {
+            for (int i = 0; i < activeBuffs.Count; i++) {
                 AbilitySO activeBuff = activeBuffs[i];
                 if (activeBuff != null && activeBuff.name == buffCopy.name) {
                     // If the buff is already active, refresh the duration
@@ -127,36 +128,15 @@ namespace USG.Character
                 }
             }
 
-            // Find an empty slot for the new buff
-            for (int i = 0; i < activeBuffs.Length; i++) {
-                if (activeBuffs[i] == null) {
-                    activeBuffs[i] = buffCopy;
-                    Debug.Log("Buff applied: " + activeBuffs[i].name);
-                    
-                    ApplyBuffEffects();
-                    StatsUIManager.Instance.AddBuffIcon(iconGroup, transform.position, buffCopy);
-                    return;
-                }
-            }
+            activeBuffs.Add(buffCopy);
+            Debug.Log("Buff applied: " + buffCopy.name);
 
-            // If all slots are full, override the oldest buff
-            int oldestBuffIndex = 0;
-            int oldestBuffDuration = activeBuffs[0].duration;
-            for (int i = 1; i < activeBuffs.Length; i++) {
-                if (activeBuffs[i] != null && activeBuffs[i].duration < oldestBuffDuration) {
-                    oldestBuffIndex = i;
-                    oldestBuffDuration = activeBuffs[i].duration;
-                }
-            }
-            activeBuffs[oldestBuffIndex] = buffCopy;
-            Debug.Log("Buff applied: " + activeBuffs[oldestBuffIndex].name);
-
-            StatsUIManager.Instance.AddBuffIcon(iconGroup, transform.position, buffCopy);
             ApplyBuffEffects();
+            StatsUIManager.Instance.AddBuffIcon(iconGroup, transform.position, buffCopy);
         }
 
         public void UpdateBuffs() {
-            for (int i = 0; i < activeBuffs.Length; i++) {
+            for (int i = activeBuffs.Count - 1; i >= 0; i--) {
                 AbilitySO activeBuff = activeBuffs[i];
                 if (activeBuff != null) {
                     // Update the duration
@@ -164,7 +144,7 @@ namespace USG.Character
                     // Check if the buff has expired
                     if (activeBuff.duration < 0) {
                         // Remove the buff
-                        activeBuffs[i] = null;
+                        activeBuffs.RemoveAt(i);
 
                         // Reverse the effect of the buff
                         switch (activeBuff.buffType) {
@@ -188,17 +168,17 @@ namespace USG.Character
         }
 
         public void ApplyBuffEffects() {
-            for (int i = 0; i < activeBuffs.Length; i++) {
+            for (int i = 0; i < activeBuffs.Count; i++) {
                 AbilitySO activeBuff = activeBuffs[i];
                 if (activeBuff != null) {
                     switch (activeBuff.buffType) {
                         case AbilitySO.BuffType.Attack:
                             attackPower += activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "ATK UP", Color.red, false);
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "ATK UP", Color.yellow, false);
                             break;
                         case AbilitySO.BuffType.Defense:
                             defense += activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "DEF Up", Color.magenta, false);
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "DEF UP", Color.yellow, false);
                             break;
                         case AbilitySO.BuffType.CriticalChance:
                             criticalChance += activeBuff.damage;
@@ -206,19 +186,90 @@ namespace USG.Character
                             break;
                         case AbilitySO.BuffType.CriticalDamage:
                             criticalDamage += activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "CDMG% Up", Color.yellow, false);
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "CDMG% UP", Color.yellow, false);
                             break;
                     }
                 }
             }
         }
 
+        #endregion
+
+        #region Debuff Logic
+        public void ApplyDebuff(AbilitySO debuff) {
+            // Create a copy of the buff to avoid modifying the asset in the project
+            AbilitySO debuffCopy = Instantiate(debuff);
+
+            // Check if the buff is already active
+            for (int i = 0; i < activeBuffs.Count; i++) {
+                AbilitySO activeBuff = activeBuffs[i];
+                if (activeBuff != null && activeBuff.name == debuffCopy.name) {
+                    // If the buff is already active, refresh the duration
+                    activeBuff.duration = debuffCopy.duration;
+                    Debug.Log("Buff refreshed: " + activeBuff.name);
+                    return;
+                }
+            }
+
+            activeBuffs.Add(debuffCopy);
+            Debug.Log("Buff applied: " + debuffCopy.name);
+
+            ApplyDebuffEffects();
+            StatsUIManager.Instance.AddBuffIcon(iconGroup, transform.position, debuffCopy);
+        }
+
+        public void UpdateDebuffs() {
+            for (int i = activeBuffs.Count - 1; i >= 0; i--) {
+                AbilitySO activeBuff = activeBuffs[i];
+                if (activeBuff != null) {
+                    // Update the duration
+                    activeBuff.duration -= 1;
+                    // Check if the buff has expired
+                    if (activeBuff.duration < 0) {
+                        // Remove the buff
+                        activeBuffs.RemoveAt(i);
+
+                        // Reverse the effect of the buff
+                        switch (activeBuff.debuffType) {
+                            case AbilitySO.DebuffType.Attack:
+                                attackPower += activeBuff.damage;
+                                break;
+                            case AbilitySO.DebuffType.Defense:
+                                defense += activeBuff.damage;
+                                break;
+                        }
+                        StatsUIManager.Instance.RemoveBuffIcon(activeBuff);
+                    }
+                }
+            }
+        }
+
+        public void ApplyDebuffEffects() {
+            for (int i = 0; i < activeBuffs.Count; i++) {
+                AbilitySO activeBuff = activeBuffs[i];
+                if (activeBuff != null) {
+                    switch (activeBuff.debuffType) {
+                        case AbilitySO.DebuffType.Attack:
+                            attackPower -= activeBuff.damage;
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "ATK DOWN", Color.magenta, false);
+                            break;
+                        case AbilitySO.DebuffType.Defense:
+                            defense -= activeBuff.damage;
+                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "DEF DOWN", Color.magenta, false);
+                            break;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Animation Shenaigans
         public void PlayAttack(int attackID) {
             playAnim.SetTrigger("Attack");
             playAnim.SetInteger("AttackID", attackID);
         }
 
-        public void PlayStagger() {
+        void PlayStagger() {
             playAnim.SetTrigger("Hit");
         }
 
@@ -226,8 +277,8 @@ namespace USG.Character
         IEnumerator CharacterDead() {
             playAnim.SetBool("IsDead", true);
             yield return new WaitForSeconds(3f);
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
-    }
+		#endregion
+	}
 }
-
