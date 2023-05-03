@@ -18,23 +18,26 @@ namespace USG.Mechanics {
         //public GameObject player;
         //public GameObject enemy;
 
+        [Header("Character Stats")]
         private CharacterStats playerStats;
         private CharacterStats enemyStats;
 
+        [Header("Speech Components")]
         private string[] keywords;
-
         private KeywordRecognizer keywordRecognizer;
 
-        private GameState gameState;
-        
-        [SerializeField] float timeBetweenTurns;
-        bool playerActionSuccess;
         float realDamage;
 
+        [Header("Turn Based Manager")]
+        private GameState gameState;
+        bool playerActionSuccess;
+        [SerializeField] float timeBetweenTurns;
         [SerializeField][ReadOnly]private int turnCounter;
-
-        [Header("Subtitle")]
+        
+        [Header("UI Shenanigans")]
         [SerializeField] TextMeshProUGUI subtitle;
+        [SerializeField] GameObject playerLogo;
+        [SerializeField] GameObject enemyLogo;
 
         void Start() {
             GameObject playerObj = GameObject.Find("Player");
@@ -118,6 +121,8 @@ namespace USG.Mechanics {
                 switch (gameState) {
                     case GameState.PlayerTurn:
                         Debug.Log("Player's turn");
+                        playerLogo.SetActive(true);
+                        enemyLogo.SetActive(false);
 
                         yield return StartCoroutine(PlayerTurn());
                         turnCounter += 1;
@@ -137,8 +142,9 @@ namespace USG.Mechanics {
 
                         yield return StartCoroutine(EnemyTurn());
                         turnCounter += 1;
-                        
-
+                        playerLogo.SetActive(false);
+                        enemyLogo.SetActive(true);
+                    
                         if (WinCondition()) {
                             gameState = GameState.GameOver;
                         }
@@ -167,6 +173,7 @@ namespace USG.Mechanics {
 		#region Player Turn
 		IEnumerator PlayerTurn() {
             Debug.Log("Waiting for player input...");
+
             playerStats.UpdateBuffs();
 
             // Start recording audio from the microphone
@@ -289,10 +296,12 @@ namespace USG.Mechanics {
                 }
                 else {
                     Debug.Log("Not enough mana to use " + selectedAbility.abilityName);
+                    playerStats.StatusUIText("Not Enough Mana", Color.cyan);
                 }
             }
             else {
                 Debug.Log(selectedAbility.abilityName + " not found");
+                playerStats.StatusUIText("Forbidden", Color.red);
             }
             playerActionSuccess = true;
         }
@@ -381,6 +390,7 @@ namespace USG.Mechanics {
             }
             else {
                 Debug.Log("Enemy run out of mana");
+                enemyStats.StatusUIText("Not Enough Mana", Color.cyan);
             }
             playerActionSuccess = false;
             yield return null;

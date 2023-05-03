@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Defense Down 1
   m_EditorClassIdentifier: 
   abilityName: Defense Down 1
-  abilityKeyword: counter attack
+  abilityKeyword: corruption
   abilityDescription: Defense downed 20 for 3 turns
   damage: 20
   manaCost: 80

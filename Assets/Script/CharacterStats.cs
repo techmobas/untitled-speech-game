@@ -93,6 +93,10 @@ namespace USG.Character
             }
         }
 
+        public void StatusUIText(string text, Color color) {
+            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, text, color, false);
+        }
+
         public void Regenerate(float regenValue, Color color) {
             StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, regenValue.ToString(), color, false);
         }
