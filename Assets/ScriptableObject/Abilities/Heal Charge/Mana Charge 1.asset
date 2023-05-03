@@ -15,11 +15,12 @@ MonoBehaviour:
   abilityName: Basic Recharge
   abilityKeyword: arcane boots
   abilityDescription: Restore small amount of mana
-  damage: 85
+  damage: 115
   manaCost: 0
   abilityType: 1
   chargeType: 1
   buffType: 0
+  debuffType: 0
   duration: 0
   icon: {fileID: 0}
   effect: {fileID: 0}
