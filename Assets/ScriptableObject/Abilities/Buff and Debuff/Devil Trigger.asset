@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
+  m_Name: Devil Trigger
+  m_EditorClassIdentifier: 
+  abilityName: Devil Trigger
+  abilityKeyword: i need more power
+  abilityDescription: Crit DMG up 100% for 3 turn
+  damage: 1
+  manaCost: 125
+  abilityType: 2
+  chargeType: 0
+  buffType: 3
+  debuffType: 0
+  duration: 3
+  icon: {fileID: 417367580, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
+  effect: {fileID: 0}

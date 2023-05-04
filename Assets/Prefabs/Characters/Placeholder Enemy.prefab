@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &353530126047906502
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424211, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424212, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: criticalDamage
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424212, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: abilities.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424212, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: abilities.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 8bfdfa2362bfef74e9f5a93d8ad6a593, type: 2}
+    - target: {fileID: 4442532182149424212, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: abilities.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 3b876e9e142ddd44f943d6f79d03a682, type: 2}
+    - target: {fileID: 4442532182149424212, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: abilities.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 75f950ab5fedb8f4aaebd828f42cc721, type: 2}
+    - target: {fileID: 4442532182149424212, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: abilities.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: 78d40d17a15a3d44a97f39fd5f808b90, type: 2}
+    - target: {fileID: 4442532182149424212, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: abilities.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 03e1cc58487dd5c45b0080d8819f1aaa, type: 2}
+    - target: {fileID: 4442532182149424213, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_Name
+      value: Placeholder Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424213, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4442532182149424213, guid: 585f1a03333d8b44a93604550550da01, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 585f1a03333d8b44a93604550550da01, type: 3}
