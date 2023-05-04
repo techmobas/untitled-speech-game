@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
   m_Name: Devil Trigger
   m_EditorClassIdentifier: 
-  abilityName: Critical Damage Up 1
+  abilityName: Devil Trigger
   abilityKeyword: i need more power
-  abilityDescription: Crit DMG% up 100% for 3 turn
+  abilityDescription: Crit DMG up 100% for 3 turn
   damage: 1
   manaCost: 125
   abilityType: 2

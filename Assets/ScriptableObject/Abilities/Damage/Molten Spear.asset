@@ -20,6 +20,7 @@ MonoBehaviour:
   abilityType: 0
   chargeType: 0
   buffType: 0
+  debuffType: 0
   duration: 0
   icon: {fileID: 0}
   effect: {fileID: 2133145206037501145, guid: 476fc4c2116c4004aad2748944057c50, type: 3}

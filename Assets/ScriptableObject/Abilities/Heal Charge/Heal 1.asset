@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Basic Heal
   abilityKeyword: bless
-  abilityDescription: Heals player for 175
+  abilityDescription: Heals for 175 point
   damage: 175
   manaCost: 50
   abilityType: 1
