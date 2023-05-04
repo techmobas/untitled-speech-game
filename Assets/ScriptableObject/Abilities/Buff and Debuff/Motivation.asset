@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
-  m_Name: Critical Damage Up
+  m_Name: Motivation
   m_EditorClassIdentifier: 
-  abilityName: Critical Damage Up 1
-  abilityKeyword: i need more power
-  abilityDescription: Crit DMG% up 100% for 3 turn
-  damage: 1
-  manaCost: 125
+  abilityName: Motivation
+  abilityKeyword: i am motivated
+  abilityDescription: Crit Chance% up 25% for 5 turn
+  damage: 0.25
+  manaCost: 100
   abilityType: 2
   chargeType: 0
-  buffType: 3
+  buffType: 2
   debuffType: 0
-  duration: 3
-  icon: {fileID: 417367580, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
+  duration: 5
+  icon: {fileID: 1256354867, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
   effect: {fileID: 0}

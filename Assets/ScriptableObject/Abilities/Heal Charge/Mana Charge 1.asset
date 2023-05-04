@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mana Charge 1
   m_EditorClassIdentifier: 
   abilityName: Basic Recharge
-  abilityKeyword: arcane boots
+  abilityKeyword: clarity
   abilityDescription: Restore small amount of mana
   damage: 115
   manaCost: 0
