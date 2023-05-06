@@ -22,5 +22,5 @@ MonoBehaviour:
   buffType: 0
   debuffType: 0
   duration: 0
-  icon: {fileID: 0}
+  icon: {fileID: -461231165, guid: 02bc993548b944a4e84d9f475f1d4cb6, type: 3}
   effect: {fileID: 2247391047079604434, guid: 76a6fc76388bf5c4e9b7dd3bd235c095, type: 3}

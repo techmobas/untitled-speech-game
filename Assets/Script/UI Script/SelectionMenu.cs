@@ -7,9 +7,8 @@ using TMPro;
 using Malee.List;
 using DG.Tweening;
 
-public class SelectionMenu : MonoBehaviour
-{
-    [SerializeField] protected Button buttonPrefab;
+public class SelectionMenu : MonoBehaviour {
+	[SerializeField] protected Button buttonPrefab;
 	[SerializeField] protected float fadeDuration = .5f;
 	[SerializeField] protected Transform buttonContainer;
 
@@ -56,8 +55,7 @@ public class SelectionMenu : MonoBehaviour
 				}
 
 				MenuButton temp = mb;
-				butt.onClick.AddListener(delegate
-				{
+				butt.onClick.AddListener(delegate {
 					ToggleButtons(false);
 					if (temp.onExecute != null) {
 						temp.onExecute.Invoke();

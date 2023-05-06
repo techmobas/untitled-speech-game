@@ -30,7 +30,7 @@ public class AbilitySO : ScriptableObject
 
     [ConditionalField(nameof(abilityType), false, AbilityType.Buff, AbilityType.Debuff)]
     public int duration;
-    [ConditionalField(nameof(abilityType), false, AbilityType.Buff, AbilityType.Debuff)]
+    
     public Sprite icon;
 
     [Header("Ability Type")]
