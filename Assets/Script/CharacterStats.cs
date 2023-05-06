@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MyBox;
+using USG.UI;
 
 
 namespace USG.Character
 {
-
     public class CharacterStats : MonoBehaviour
     {
         [Header("Stats Attributes")]
@@ -30,7 +30,7 @@ namespace USG.Character
 
         [Header("Buff Attributes")]
         public AbilitySO[] abilities;
-        [SerializeField] [ReadOnly] List<AbilitySO> activeBuffs = new List<AbilitySO>();
+        [ReadOnly] public List<AbilitySO> activeBuffs = new List<AbilitySO>();
 
         [Header("Character Animation")]
         private Animator playAnim;
@@ -38,6 +38,7 @@ namespace USG.Character
         [Header("Canvas Control")]
         [SerializeField] RectTransform statusCanvas;
         [SerializeField] RectTransform iconGroup;
+    
 
         private void Start()
         {
@@ -59,6 +60,7 @@ namespace USG.Character
             if (attackPower >= 1500) {
                 attackPower = 1500;
             }
+
             if (defense >= 200) {
                 defense = 200;
             }
@@ -137,13 +139,33 @@ namespace USG.Character
 
             ApplyBuffEffects();
             StatsUIManager.Instance.AddBuffIcon(iconGroup, transform.position, buffCopy);
+
+            // Determine the type of buff and set the string accordingly
+            string buffString = "";
+            switch (buffCopy.buffType) {
+                case AbilitySO.BuffType.Attack:
+                    buffString = "ATK UP";
+                    break;
+                case AbilitySO.BuffType.Defense:
+                    buffString = "DEF UP";
+                    break;
+                case AbilitySO.BuffType.CriticalChance:
+                    buffString = "CC% UP";
+                    break;
+                case AbilitySO.BuffType.CriticalDamage:
+                    buffString = "CDMG% UP";
+                    break;
+                default:
+                    break;
+            }
+
+            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, buffString, Color.yellow, false);
         }
 
         public void UpdateBuffs() {
             for (int i = activeBuffs.Count - 1; i >= 0; i--) {
                 AbilitySO activeBuff = activeBuffs[i];
                 if (activeBuff != null) {
-                    // Update the duration
                     activeBuff.duration -= 1;
                     // Check if the buff has expired
                     if (activeBuff.duration < 0) {
@@ -165,7 +187,7 @@ namespace USG.Character
                                 criticalDamage -= activeBuff.damage;
                                 break;
                         }
-                        StatsUIManager.Instance.RemoveBuffIcon(activeBuff);
+                        StatsUIManager.Instance.RemoveBuffIcon(activeBuff);                   
                     }
                 }
             }
@@ -178,19 +200,15 @@ namespace USG.Character
                     switch (activeBuff.buffType) {
                         case AbilitySO.BuffType.Attack:
                             attackPower += activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "ATK UP", Color.yellow, false);
                             break;
                         case AbilitySO.BuffType.Defense:
                             defense += activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "DEF UP", Color.yellow, false);
                             break;
                         case AbilitySO.BuffType.CriticalChance:
                             criticalChance += activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "CC% UP", Color.yellow, false);
                             break;
                         case AbilitySO.BuffType.CriticalDamage:
                             criticalDamage += activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "CDMG% UP", Color.yellow, false);
                             break;
                     }
                 }
@@ -220,6 +238,21 @@ namespace USG.Character
 
             ApplyDebuffEffects();
             StatsUIManager.Instance.AddBuffIcon(iconGroup, transform.position, debuffCopy);
+
+            // Determine the type of buff and set the string accordingly
+            string buffString = "";
+            switch (debuffCopy.debuffType) {
+                case AbilitySO.DebuffType.Attack:
+                    buffString = "ATK DOWN";
+                    break;
+                case AbilitySO.DebuffType.Defense:
+                    buffString = "DEF DOWN";
+                    break;
+                default:
+                    break;
+            }
+
+            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, buffString, Color.yellow, false);
         }
 
         public void UpdateDebuffs() {
@@ -255,11 +288,9 @@ namespace USG.Character
                     switch (activeBuff.debuffType) {
                         case AbilitySO.DebuffType.Attack:
                             attackPower -= activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "ATK DOWN", Color.magenta, false);
                             break;
                         case AbilitySO.DebuffType.Defense:
                             defense -= activeBuff.damage;
-                            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, "DEF DOWN", Color.magenta, false);
                             break;
                     }
                 }

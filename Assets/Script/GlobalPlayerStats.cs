@@ -17,7 +17,7 @@ namespace USG.Character {
         private PlayerStats playerStats;
 
         private void Start() {
-            playerStats = GameObject.Find("Player").GetComponent<PlayerStats>();
+            playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
             if (playerStats == null) {
                 Debug.LogError("Could not find PlayerStats object!");
             }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using USG.Character;
 
-namespace USG.Character {
+namespace USG.UI {
 
     public class StatusUI : MonoBehaviour {
         CharacterStats chara;

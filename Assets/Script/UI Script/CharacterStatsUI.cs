@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using USG.Character;
 
-namespace USG.Character {
+
+namespace USG.UI {
 	public class CharacterStatsUI : MonoBehaviour {
+		[Header("Character Stats")]
 		public CharacterStats chara;
-
 		[SerializeField] TextMeshProUGUI charaName;
+
+		[Header("UI Parts")]
 		[SerializeField] TextMeshProUGUI hpInfo;
 		[SerializeField] TextMeshProUGUI manaInfo;
 		[SerializeField] TextMeshProUGUI atkInfo;

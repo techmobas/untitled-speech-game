@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuController : Singleton<MenuController>
-{
+public class MenuController : Singleton<MenuController> {
 	[SerializeField] SelectionMenu selectionMenu;
 
 	Stack<SelectionMenu> panelStack;

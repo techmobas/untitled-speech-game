@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Attack Up 1
   abilityKeyword: power up
-  abilityDescription: Attack up 100 for 3 turn
+  abilityDescription: Increase Attack by 100 for 3 turn
   damage: 100
   manaCost: 80
   abilityType: 2

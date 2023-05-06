@@ -40,7 +40,7 @@ namespace USG.Mechanics {
         [SerializeField] GameObject enemyLogo;
 
         void Start() {
-            GameObject playerObj = GameObject.Find("Player");
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
             if (playerObj != null) {
                 playerStats = playerObj.GetComponent<CharacterStats>();
             }
