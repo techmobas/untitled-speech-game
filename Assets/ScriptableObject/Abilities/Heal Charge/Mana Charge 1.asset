@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Mana Charge 1
   m_EditorClassIdentifier: 
   abilityName: Basic Recharge
-  abilityKeyword: clarity
-  abilityDescription: Restore mana for 115
-  damage: 115
+  abilityKeyword: charge
+  abilityDescription: Restore mana for 250
+  damage: 250
   manaCost: 0
   abilityType: 1
   chargeType: 1

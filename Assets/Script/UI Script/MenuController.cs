@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuController : Singleton<MenuController> {
 	[SerializeField] SelectionMenu selectionMenu;
@@ -62,4 +63,28 @@ public class MenuController : Singleton<MenuController> {
 		top.Show();
 		top.ToggleButtons(true);
 	}
+
+	public void Restart() {
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+		SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
+	}
+
+	public void NextLevel() {
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+		SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
+	}
+
+	public void MainMenu() {
+		SceneManager.LoadScene("Main Menu");
+		SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
+	}
+
+	//public void LoadFirstLevel() {
+	//	SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+	//}
+
+	public void Quit() {
+		Application.Quit();
+	}
+
 }

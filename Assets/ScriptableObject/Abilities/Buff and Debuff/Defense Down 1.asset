@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Defense Down 1
   abilityKeyword: corruption
-  abilityDescription: Defense downed 20 for 3 turns
-  damage: 20
+  abilityDescription: Defense downed 15 for 5 turns
+  damage: 15
   manaCost: 80
   abilityType: 3
   chargeType: 0
   buffType: 0
   debuffType: 1
-  duration: 3
+  duration: 5
   icon: {fileID: 954966973, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
   effect: {fileID: 0}

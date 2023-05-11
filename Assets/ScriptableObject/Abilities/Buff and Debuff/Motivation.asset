@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Motivation
   abilityKeyword: i am motivated
-  abilityDescription: Crit Chance up 25% for 5 turn
+  abilityDescription: Crit Chance up 25% for 3 turn
   damage: 0.25
   manaCost: 100
   abilityType: 2
   chargeType: 0
   buffType: 2
   debuffType: 0
-  duration: 5
+  duration: 3
   icon: {fileID: 1256354867, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
   effect: {fileID: 0}

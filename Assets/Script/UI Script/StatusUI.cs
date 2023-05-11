@@ -25,6 +25,9 @@ namespace USG.UI {
 
         // Update is called once per frame
         void Update() {
+            hpSlider.maxValue = chara.MaxHealth();
+            manaSlider.maxValue = chara.MaxMana();
+
             hpSlider.value = chara.CurrentHealth();
             manaSlider.value = chara.CurrentMana();
         }
