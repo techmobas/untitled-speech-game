@@ -168,7 +168,7 @@ namespace USG.Character
                 if (activeBuff != null) {
                     activeBuff.duration -= 1;
                     // Check if the buff has expired
-                    if (activeBuff.duration < 0) {
+                    if (activeBuff.duration <= 0) {
                         // Remove the buff
                         activeBuffs.RemoveAt(i);
 

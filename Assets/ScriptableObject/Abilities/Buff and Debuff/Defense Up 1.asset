@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Defense Up 1
   m_EditorClassIdentifier: 
   abilityName: Defense Up
-  abilityKeyword: protect me
-  abilityDescription: Defense up 20 for 3 turns
-  damage: 20
+  abilityKeyword: protection
+  abilityDescription: Defense up 15 for 5 turns
+  damage: 15
   manaCost: 80
   abilityType: 2
   chargeType: 0
   buffType: 1
   debuffType: 0
-  duration: 3
+  duration: 5
   icon: {fileID: -1003509865, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
   effect: {fileID: 0}

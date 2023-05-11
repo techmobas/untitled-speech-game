@@ -12,13 +12,8 @@ public class MicTest : MonoBehaviour
         AudioClip audioClip = Microphone.Start(null, true, 120, 44100);
         while (!(Microphone.GetPosition(null) > 0)) { } // Wait until recording starts
 
-        // Play back the recorded audio to verify that it is working
-        AudioSource audioSource = GetComponent<AudioSource>();
-        audioSource.clip = audioClip;
-        audioSource.Play();
-
         // Define the keywords to recognize
-        string[] keywords = { "persona", "i got you", "attack" };
+        string[] keywords = { "persona" };
         keywordRecognizer = new KeywordRecognizer(keywords);
         keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
         keywordRecognizer.Start();
@@ -53,15 +48,9 @@ public class MicTest : MonoBehaviour
         {
             case "persona":
                 Debug.Log("You say Persona");
-                break;
-            case "i got you":
-                Debug.Log("I got you too");
-                break;
-            case "attack":
-                Debug.Log("Okay");
-                break;
-            default:
-                Debug.Log("What did you say??");
+                gameObject.SetActive(false);
+                keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
+                keywordRecognizer.Stop();
                 break;
         }
     }

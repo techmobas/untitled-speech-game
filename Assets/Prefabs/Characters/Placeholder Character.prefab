@@ -155,10 +155,12 @@ MonoBehaviour:
   maxHealth: 3500
   maxMana: 500
   attackPower: 200
-  defense: 10
+  defense: 30
   criticalChance: 0.05
-  criticalDamage: 1
-  abilities: []
+  criticalDamage: 0.5
+  abilities:
+  - {fileID: 11400000, guid: 78d40d17a15a3d44a97f39fd5f808b90, type: 2}
+  - {fileID: 11400000, guid: 87eb60e962261d94ba2c455df374d9ea, type: 2}
   activeBuffs: []
   statusCanvas: {fileID: 2388571331989257782}
   iconGroup: {fileID: 271634943762846982}

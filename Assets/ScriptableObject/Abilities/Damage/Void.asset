@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
   m_Name: Void
   m_EditorClassIdentifier: 
-  abilityName: Void
-  abilityKeyword: summon void
+  abilityName: Black Hole?
+  abilityKeyword: black hole
   abilityDescription: Summons an unknown force of power
   damage: 200
   manaCost: 170

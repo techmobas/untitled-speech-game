@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Windows.Speech;
 using MyBox;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 namespace USG.Mechanics {
     public enum GameState {
@@ -160,10 +161,14 @@ namespace USG.Mechanics {
         bool WinCondition() {
             if (playerStats.CurrentHealth() <= 0) {
                 Debug.Log("Enemy wins!");
+                SceneManager.LoadScene("Main Menu");
+                SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
                 return true;
             }
             if (enemyStats.CurrentHealth() <= 0) {
                 Debug.Log("Player wins!");
+                SceneManager.LoadScene("Main Menu");
+                SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
                 return true;
             }
             return false;
