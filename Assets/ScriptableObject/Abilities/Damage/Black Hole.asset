@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
+  m_Name: Black Hole
+  m_EditorClassIdentifier: 
+  abilityName: Black Hole?
+  abilityKeyword: black hole
+  abilityDescription: Summons an unknown force of power
+  damage: 200
+  manaCost: 170
+  abilityType: 0
+  chargeType: 0
+  buffType: 0
+  debuffType: 0
+  duration: 0
+  icon: {fileID: 1241385497, guid: 02bc993548b944a4e84d9f475f1d4cb6, type: 3}
+  effect: {fileID: 1723034898250420207, guid: a6dc6ffede999ac40b313f0668507478, type: 3}

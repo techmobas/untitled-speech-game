@@ -86,7 +86,7 @@ namespace USG.Character
 
         public void TakeDamage(float damage, Color color, bool isCrit)
         {
-            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, damage.ToString(), color, isCrit);
+            StatsUIManager.Instance.GenerateText(statusCanvas, transform.position, damage.ToString("F0"), color, isCrit);
             currentHealth -= damage;
             PlayStagger();
             if (currentHealth <= 0)

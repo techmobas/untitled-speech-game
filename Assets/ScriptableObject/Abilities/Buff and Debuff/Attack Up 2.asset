@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
+  m_Name: Attack Up 2
+  m_EditorClassIdentifier: 
+  abilityName: Attack Up
+  abilityKeyword: power up
+  abilityDescription: Increase Attack by 200 for 5 turn
+  damage: 200
+  manaCost: 160
+  abilityType: 2
+  chargeType: 0
+  buffType: 0
+  debuffType: 0
+  duration: 5
+  icon: {fileID: -837144412, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
+  effect: {fileID: 0}
