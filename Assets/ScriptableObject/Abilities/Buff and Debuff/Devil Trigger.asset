@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Devil Trigger
   abilityKeyword: i need more power
-  abilityDescription: Crit DMG up 100% for 3 turn
+  abilityDescription: Increase Crit DMG 100% for 3 turn
   damage: 1
   manaCost: 125
   abilityType: 2
@@ -22,5 +22,5 @@ MonoBehaviour:
   buffType: 3
   debuffType: 0
   duration: 3
-  icon: {fileID: 417367580, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
+  icon: {fileID: -2038452777, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
   effect: {fileID: 0}

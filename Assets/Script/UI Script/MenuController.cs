@@ -65,16 +65,25 @@ public class MenuController : Singleton<MenuController> {
 	}
 
 	public void Restart() {
+		StartCoroutine(Delay());
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 		SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
 	}
 
+	public void LoadLevel(string sceneName) {
+		StartCoroutine(Delay());
+		SceneManager.LoadScene(sceneName);
+		SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
+	}
+
 	public void NextLevel() {
+		StartCoroutine(Delay());
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 		SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
 	}
 
 	public void MainMenu() {
+		StartCoroutine(Delay());
 		SceneManager.LoadScene("Main Menu");
 		SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
 	}
@@ -82,6 +91,10 @@ public class MenuController : Singleton<MenuController> {
 	//public void LoadFirstLevel() {
 	//	SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 	//}
+
+	IEnumerator Delay() {
+		yield return new WaitForSeconds(1f);
+	}
 
 	public void Quit() {
 		Application.Quit();

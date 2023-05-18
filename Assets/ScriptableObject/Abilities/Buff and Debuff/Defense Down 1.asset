@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
   m_Name: Defense Down 1
   m_EditorClassIdentifier: 
-  abilityName: Defense Down 1
+  abilityName: Defense Down
   abilityKeyword: corruption
-  abilityDescription: Defense downed 15 for 5 turns
+  abilityDescription: Decrease defense by 15 for 3 turns
   damage: 15
   manaCost: 80
   abilityType: 3

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Defense Up
   abilityKeyword: protection
-  abilityDescription: Defense up 15 for 5 turns
-  damage: 15
+  abilityDescription: Increase Defense by 20 for 5 turns
+  damage: 20
   manaCost: 80
   abilityType: 2
   chargeType: 0

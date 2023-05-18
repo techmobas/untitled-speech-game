@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Attack Down
   abilityKeyword: curse you
-  abilityDescription: Decrease Attack by 100 for 5 turns
+  abilityDescription: Decrease Attack by 100 for 3 turns
   damage: 100
   manaCost: 80
   abilityType: 3
   chargeType: 0
   buffType: 0
   debuffType: 0
-  duration: 5
+  duration: 3
   icon: {fileID: -924172254, guid: 65e3886be75174b4dad29d474e4c630e, type: 3}
   effect: {fileID: 0}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using USG.Character;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
+using UnityEngine.Events;
 using MyBox;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -33,10 +34,17 @@ namespace USG.Mechanics {
         private GameState gameState;
         bool playerActionSuccess;
         [SerializeField] float timeBetweenTurns;
-        [SerializeField][ReadOnly]private int turnCounter;
-        
+        [SerializeField][ReadOnly] private int turnCounter = 1;
+
+        [Header("Game Condition")]
+        public UnityEvent winCondition;
+        public UnityEvent loseCondition;
+
         [Header("UI Shenanigans")]
         [SerializeField] TextMeshProUGUI subtitle;
+        [SerializeField] TextMeshProUGUI levelConf;
+        [SerializeField] TextMeshProUGUI turnSub;
+
         [SerializeField] GameObject playerLogo;
         [SerializeField] GameObject enemyLogo;
 
@@ -66,7 +74,8 @@ namespace USG.Mechanics {
 
             // initialize the keyword recognizer with the keywords array
             keywordRecognizer = new KeywordRecognizer(keywords);
-           
+
+            turnSub.text = "Turn(s) : " + turnCounter.ToString();
             StartCoroutine(TakeTurn());
         }
 
@@ -99,14 +108,23 @@ namespace USG.Mechanics {
                         case ConfidenceLevel.High:
                             Debug.Log("High confidence");
                             PlayerUseAbility(recognizedText);
+
+                            levelConf.text = "High confidence";
+                            levelConf.color = Color.green;
                             break;
                         case ConfidenceLevel.Medium:
                             Debug.Log("Medium confidence");
                             PlayerUseAbility(recognizedText);
+
+                            levelConf.text = "Medium confidence";
+                            levelConf.color = Color.yellow;
                             break;
                         case ConfidenceLevel.Low:
                             Debug.LogWarning("Low confidence");
                             PlayerUseAbility(recognizedText);
+
+                            levelConf.text = "Low confidence";
+                            levelConf.color = Color.white;
                             break;
                         default:
                             break;
@@ -127,6 +145,7 @@ namespace USG.Mechanics {
 
                         yield return StartCoroutine(PlayerTurn());
                         turnCounter += 1;
+                        turnSub.text = "Turn(s) : " + turnCounter.ToString();
 
                         if (WinCondition()) {
                             gameState = GameState.GameOver;
@@ -143,6 +162,8 @@ namespace USG.Mechanics {
 
                         yield return StartCoroutine(EnemyTurn());
                         turnCounter += 1;
+                        turnSub.text = "Turn(s) : " + turnCounter.ToString();
+
                         playerLogo.SetActive(false);
                         enemyLogo.SetActive(true);
                     
@@ -161,14 +182,12 @@ namespace USG.Mechanics {
         bool WinCondition() {
             if (playerStats.CurrentHealth() <= 0) {
                 Debug.Log("Enemy wins!");
-                SceneManager.LoadScene("Main Menu");
-                SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
+                loseCondition.Invoke();
                 return true;
             }
             if (enemyStats.CurrentHealth() <= 0) {
                 Debug.Log("Player wins!");
-                SceneManager.LoadScene("Main Menu");
-                SceneManager.LoadScene("Persistent", LoadSceneMode.Additive);
+                winCondition.Invoke();
                 return true;
             }
             return false;
@@ -343,6 +362,7 @@ namespace USG.Mechanics {
                         // Play attack animation
                         enemyStats.PlayAttack(1);
 
+                        enemyStats.SetCurrentMana(enemyCurrentMana);
                         Debug.Log("Damage Dealt by " + selectedAbility.abilityName + " for " + realDamage);
 
                         playerStats.SpawnEffect(selectedAbility.effect);
@@ -384,7 +404,7 @@ namespace USG.Mechanics {
                         Debug.Log("Added " + selectedAbility.abilityName);
                         break;
                     case AbilitySO.AbilityType.Debuff:
-                        playerStats.PlayAttack(0);
+                        enemyStats.PlayAttack(0);
 
                         playerStats.ApplyDebuff(selectedAbility);
                         enemyStats.SetCurrentMana(enemyCurrentMana);

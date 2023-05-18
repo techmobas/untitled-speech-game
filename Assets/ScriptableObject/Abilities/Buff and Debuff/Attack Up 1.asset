@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e42e1a0493f224082685afde0d196c, type: 3}
   m_Name: Attack Up 1
   m_EditorClassIdentifier: 
-  abilityName: Attack Up 1
+  abilityName: Attack Up
   abilityKeyword: power up
-  abilityDescription: Increase Attack by 100 for 5 turn
-  damage: 100
+  abilityDescription: Increase Attack by 150 for 5 turn
+  damage: 150
   manaCost: 80
   abilityType: 2
   chargeType: 0
