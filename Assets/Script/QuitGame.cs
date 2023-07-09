@@ -4,27 +4,19 @@ using UnityEngine;
 using UnityEngine.Windows.Speech;
 using UnityEngine.Events;
 
-public class LevelSelect : MonoBehaviour
-{
+public class QuitGame : MonoBehaviour {
+
     private KeywordRecognizer keywordRecognizer;
 
-    [Header("Levels")]
-    public UnityEvent levelOne;
-    public UnityEvent levelTwo;
-    public UnityEvent levelThree;
-    public UnityEvent levelFour;
-    public UnityEvent levelBoss;
-    public UnityEvent levelSecret;
+    public UnityEvent quitMenu;
     public UnityEvent quitGame;
 
-
     private void Start() {
-        // Start recording audio from the microphone
         AudioClip audioClip = Microphone.Start(null, true, 120, 44100);
         while (!(Microphone.GetPosition(null) > 0)) { } // Wait until recording starts
 
         // Define the keywords to recognize
-        string[] keywords = { "play", "give me mushroom", "give me goblin", "give me skeleton", "give me a boss", "give me a challenge", "application exit" };
+        string[] keywords = { "exit battle", "exit game"};
         keywordRecognizer = new KeywordRecognizer(keywords);
         keywordRecognizer.OnPhraseRecognized += OnPhraseRecognized;
         keywordRecognizer.Start();
@@ -52,34 +44,15 @@ public class LevelSelect : MonoBehaviour
 
     private void DoSomething(string text) {
         switch (text) {
-            case "play":
-                Debug.Log("Loading desired level");
-                levelOne.Invoke();
-                break;
-            case "give me mushroom":
-                Debug.Log("Loading desired level");
-                levelTwo.Invoke();
-                break;
-            case "give me goblin":
-                Debug.Log("Loading desired level");
-                levelThree.Invoke();
-                break;
-            case "give me skeleton":
-                Debug.Log("Loading desired level");
-                levelFour.Invoke();
-                break;
-            case "give me a boss":
-                Debug.Log("Loading desired level");
-                levelBoss.Invoke();
-                break;
-            case "give me a challenge":
-                Debug.Log("Loading desired level");
-                levelSecret.Invoke();
-                break;
-            case "application exit":
+            case "exit battle":
                 Debug.Log("Loading desired level");
                 quitGame.Invoke();
                 break;
+            case "exit game":
+                Debug.Log("Quitting Game");
+                break;
+
+
         }
     }
 }

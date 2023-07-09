@@ -92,6 +92,12 @@ namespace USG.Mechanics {
                 abilityKeyword[i] = abilityKeyword[i].ToLower();
             }
 
+            if (recognizedText == "exit") {
+                Debug.Log("Player wants to exit the application");
+                Application.Quit();
+                return;
+            }
+
             if (Array.IndexOf(abilityKeyword, recognizedText) < 0) {
                 Debug.LogWarning("Phrase not recognized as a valid keyword: " + recognizedText);
                 return;
@@ -213,21 +219,6 @@ namespace USG.Mechanics {
 
             keywordRecognizer.OnPhraseRecognized -= OnPhraseRecognized;
             keywordRecognizer.Stop();
-
-            //if (audioClip != null) {
-            //    // Save the audio clip if there was a successful action
-            //    if (playerActionSuccess) {
-            //        float endTime = Time.time;
-            //        float recordingLength = endTime - startTime;
-
-            //        // Save the audio clip to a WAV file in the project's Assets folder
-            //        SavWav.Save("Assets/player_action_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".wav", audioClip);
-            //    }
-            //    // If there was no successful action, discard the audio clip
-            //    else {
-            //        Destroy(audioClip);
-            //    }
-            //}
         }
 
 		
